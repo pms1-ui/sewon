@@ -7,25 +7,32 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Pretendard', -apple-system, sans-serif; background: #f5f5f7; color: #1d1d1f; padding: 40px 20px; line-height: 1.6; }
-  .container { max-width: 1000px; margin: 0 auto; }
+  .container { max-width: 1100px; margin: 0 auto; }
   h1 { font-size: 24px; margin-bottom: 4px; }
   .subtitle { color: #6e6e73; font-size: 13px; margin-bottom: 32px; }
   h2 { font-size: 17px; margin: 32px 0 10px; color: #1d1d1f; }
-  .card { background: #fff; border-radius: 10px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-  .card h3 { font-size: 15px; margin-bottom: 10px; color: #0071e3; }
+  h3 { font-size: 15px; margin: 24px 0 8px; color: #0071e3; }
   .status { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-  .status-done { background: #d4edda; color: #155724; }
   .status-need { background: #fff3cd; color: #856404; }
   .status-new { background: #ffe0e6; color: #d63384; }
-  .field-list { font-size: 13px; color: #3d3d3d; margin: 8px 0; line-height: 1.8; }
-  .field-list span { font-family: 'SF Mono', monospace; font-size: 11px; background: #fff3e0; color: #e65100; padding: 2px 6px; border-radius: 3px; margin-right: 4px; }
-  .field-list span.new { background: #ffe0e6; color: #d63384; }
   .summary-box { background: #fff8e1; border-radius: 8px; padding: 14px 18px; margin: 20px 0; font-size: 13px; border-left: 4px solid #fd7e14; }
   .nav { display: flex; gap: 8px; position: fixed; top: 12px; right: 20px; z-index: 100; }
   .nav a { display: inline-block; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; color: #1d1d1f; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1); transition: background 0.2s; }
   .nav a:hover { background: #0071e3; color: #fff; }
   .nav a.active { background: #fd7e14; color: #fff; }
-  .note { font-size: 12px; color: #6e6e73; margin: 6px 0; font-style: italic; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 24px; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-size: 13px; }
+  th { background: #f8f9fa; padding: 8px 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #dee2e6; }
+  td { padding: 7px 12px; border-bottom: 1px solid #f1f3f5; }
+  tr:last-child td { border-bottom: none; }
+  .field { font-family: 'SF Mono', monospace; font-size: 11px; color: #0071e3; font-weight: 600; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .dot-need { background: #fd7e14; }
+  .dot-new { background: #d63384; }
+  .dot-check { background: #6c757d; }
+  .note { font-size: 12px; color: #86868b; font-style: italic; margin: 4px 0 14px; padding-left: 12px; border-left: 3px solid #e9ecef; }
+  .legend { display: flex; gap: 16px; margin: 16px 0; font-size: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
 </style>
 </head>
 <body>
@@ -41,63 +48,128 @@
 <h1>ERP 한눈에보기</h1>
 <p class="subtitle">세원 ERP — 개발 요청 현황 요약</p>
 
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#fd7e14"></div> ERP 개발 필요</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d63384"></div> 신규 필드 (추가 요청)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#6c757d"></div> 확인 필요</div>
+</div>
+
 <div class="summary-box">
   <strong>4개 테이블 수신 필요.</strong> 상품 마스터 / 판매현황 / 발주 정보 / 입고현황.<br>
-  WMS에서 확보한 수량 데이터에 금액·속성·상태 정보를 결합하기 위함.<br>
   동기화 방식 : 수정일자 기준 정렬 조회하여 변경분 업데이트.
 </div>
 
 <!-- 상품 마스터 -->
-<div class="card">
-  <h3>A. 상품 마스터 (고정 테이블) <span class="status status-need">개발 필요</span></h3>
-  <p class="note">출처 : 상품정보등록 화면 | 기준 키 : STYLE NO | 일 1회 전체 수신</p>
-  <div class="field-list">
-    <span>STYLE_NO</span> <span>PRODUCT_NAME</span> <span>BRAND_CODE</span> <span>YEAR</span> <span>SEASON</span> <span>CATEGORY_L</span> <span>CATEGORY_S</span> <span>GENDER</span> <span>MATERIAL</span> <span>ORIGIN</span> <span>PLAN_TYPE</span> <span>BATCH_NO</span> <span>COLOR_SIZE_QTY</span> <span>THUMBNAIL</span> <span>TAG_PRICE</span> <span>FIRST_PRICE</span> <span>PRE_COST</span> <span>POST_COST</span> <span>FOB_PRICE</span> <span>EXCHANGE_RATE</span> <span>PRICE_CONFIRM_DATE</span> <span class="new">SALE_START_DATE</span>
-  </div>
-  <p class="note">SALE_START_DATE (판매예정일) = 신규 필드 추가 요청. 발주확정 전환 시 필수 입력.</p>
-</div>
+<h3>A. 상품 마스터 (고정 테이블) <span class="status status-need">개발 필요</span></h3>
+<p class="note">출처 : 상품정보등록 화면 | 기준 키 : STYLE NO | 일 1회 전체 수신</p>
+<table>
+  <tr><th>#</th><th>필드</th><th>한글명</th><th>설명</th></tr>
+  <tr><td>1</td><td><span class="dot dot-need"></span><span class="field">STYLE_NO</span></td><td>스타일코드</td><td>기준 키</td></tr>
+  <tr><td>2</td><td><span class="dot dot-need"></span><span class="field">PRODUCT_NAME</span></td><td>품명</td><td>상품명</td></tr>
+  <tr><td>3</td><td><span class="dot dot-need"></span><span class="field">BRAND_CODE</span></td><td>브랜드</td><td>브랜드 코드·명</td></tr>
+  <tr><td>4</td><td><span class="dot dot-need"></span><span class="field">YEAR</span></td><td>연도</td><td>출시 연도</td></tr>
+  <tr><td>5</td><td><span class="dot dot-need"></span><span class="field">SEASON</span></td><td>시즌</td><td>SS/FW/연중</td></tr>
+  <tr><td>6</td><td><span class="dot dot-need"></span><span class="field">CATEGORY_L</span></td><td>대복종</td><td>카테고리 대분류</td></tr>
+  <tr><td>7</td><td><span class="dot dot-need"></span><span class="field">CATEGORY_S</span></td><td>소복종</td><td>카테고리 소분류</td></tr>
+  <tr><td>8</td><td><span class="dot dot-need"></span><span class="field">GENDER</span></td><td>성별구분</td><td>남/여/공용</td></tr>
+  <tr><td>9</td><td><span class="dot dot-need"></span><span class="field">MATERIAL</span></td><td>소재</td><td>원단·소재</td></tr>
+  <tr><td>10</td><td><span class="dot dot-need"></span><span class="field">ORIGIN</span></td><td>원산지</td><td>생산국가</td></tr>
+  <tr><td>11</td><td><span class="dot dot-need"></span><span class="field">PLAN_TYPE</span></td><td>기획구분</td><td>기획/비기획</td></tr>
+  <tr><td>12</td><td><span class="dot dot-need"></span><span class="field">BATCH_NO</span></td><td>차수</td><td>리오더 차수</td></tr>
+  <tr><td>13</td><td><span class="dot dot-need"></span><span class="field">COLOR_SIZE_QTY</span></td><td>색상/사이즈별수량</td><td>SKU 구성</td></tr>
+  <tr><td>14</td><td><span class="dot dot-need"></span><span class="field">THUMBNAIL</span></td><td>썸네일</td><td>상품 이미지 (URL)</td></tr>
+  <tr><td>15</td><td><span class="dot dot-need"></span><span class="field">TAG_PRICE</span></td><td>TAG가</td><td>정상 판매가 (정가)</td></tr>
+  <tr><td>16</td><td><span class="dot dot-need"></span><span class="field">FIRST_PRICE</span></td><td>최초가</td><td>WMS FIRST_DAN 대조</td></tr>
+  <tr><td>17</td><td><span class="dot dot-need"></span><span class="field">PRE_COST</span></td><td>사전원가</td><td>생산 전 예상 원가</td></tr>
+  <tr><td>18</td><td><span class="dot dot-need"></span><span class="field">POST_COST</span></td><td>사후원가</td><td>생산 후 확정 원가</td></tr>
+  <tr><td>19</td><td><span class="dot dot-need"></span><span class="field">FOB_PRICE</span></td><td>FOB단가</td><td>수입 상품</td></tr>
+  <tr><td>20</td><td><span class="dot dot-need"></span><span class="field">EXCHANGE_RATE</span></td><td>환율</td><td>FOB→원화</td></tr>
+  <tr><td>21</td><td><span class="dot dot-need"></span><span class="field">PRICE_CONFIRM_DATE</span></td><td>가격확정일</td><td>판매가 확정 시점</td></tr>
+  <tr><td>22</td><td><span class="dot dot-new"></span><span class="field">SALE_START_DATE</span></td><td>판매예정일</td><td>발매개시예정일. 신규 필드 추가 요청.</td></tr>
+</table>
 
 <!-- 판매현황 -->
-<div class="card">
-  <h3>B. 판매현황 (기간제 테이블) <span class="status status-need">개발 필요</span></h3>
-  <p class="note">출처 : 판매현황 화면 | 기준 키 : 온라인주문번호 + 품번+색상+사이즈 | 일 1회 전일 수신</p>
-  <div class="field-list">
-    <span>SALE_DATE</span> <span>SHOP_CODE</span> <span>SHOP_NAME</span> <span>SALE_NO</span> <span>SALE_SEQ</span> <span>WORK_TYPE</span> <span>RETURN_TYPE</span> <span>PURCHASE_TYPE</span> <span>ONLINE_ORDER_NO</span> <span class="new">ITEM_ORDER_NO</span> <span>SELLIC_ID</span> <span>STYLE_NO</span> <span>PRODUCT_NAME</span> <span>COLOR_CODE</span> <span>SIZE_CODE</span> <span>FIRST_SALE_PRICE</span> <span>CURRENT_PRICE</span> <span>SALE_QTY</span> <span>ACTUAL_SALE_AMT</span>
-  </div>
-  <p class="note">ITEM_ORDER_NO (품목별주문번호) = 신규 필드 추가 요청. 셀릭 쪽에서 생성·전달 필요.</p>
-</div>
+<h3>B. 판매현황 (기간제 테이블) <span class="status status-need">개발 필요</span></h3>
+<p class="note">출처 : 판매현황 화면 | 기준 키 : 온라인주문번호 + 품번+색상+사이즈 | 일 1회 전일 수신</p>
+<table>
+  <tr><th>#</th><th>필드</th><th>한글명</th><th>설명</th></tr>
+  <tr><td>1</td><td><span class="dot dot-need"></span><span class="field">SALE_DATE</span></td><td>판매일자</td><td></td></tr>
+  <tr><td>2</td><td><span class="dot dot-need"></span><span class="field">SHOP_CODE</span></td><td>매장코드</td><td>판매처 식별</td></tr>
+  <tr><td>3</td><td><span class="dot dot-need"></span><span class="field">SHOP_NAME</span></td><td>매장명</td><td></td></tr>
+  <tr><td>4</td><td><span class="dot dot-need"></span><span class="field">SALE_NO</span></td><td>판매번호</td><td>판매 건 고유</td></tr>
+  <tr><td>5</td><td><span class="dot dot-need"></span><span class="field">SALE_SEQ</span></td><td>판매연번</td><td>건 내 순번</td></tr>
+  <tr><td>6</td><td><span class="dot dot-need"></span><span class="field">WORK_TYPE</span></td><td>작업구분</td><td>판매/취소</td></tr>
+  <tr><td>7</td><td><span class="dot dot-need"></span><span class="field">RETURN_TYPE</span></td><td>반품구분</td><td></td></tr>
+  <tr><td>8</td><td><span class="dot dot-need"></span><span class="field">PURCHASE_TYPE</span></td><td>매입구분</td><td></td></tr>
+  <tr><td>9</td><td><span class="dot dot-need"></span><span class="field">ONLINE_ORDER_NO</span></td><td>온라인주문번호</td><td>매출대사 핵심 키</td></tr>
+  <tr><td>10</td><td><span class="dot dot-new"></span><span class="field">ITEM_ORDER_NO</span></td><td>품목별주문번호</td><td>신규. 셀릭 쪽에서 생성 필요.</td></tr>
+  <tr><td>11</td><td><span class="dot dot-need"></span><span class="field">SELLIC_ID</span></td><td>셀릭번호</td><td>품목 단위 추적</td></tr>
+  <tr><td>12</td><td><span class="dot dot-need"></span><span class="field">STYLE_NO</span></td><td>품번</td><td></td></tr>
+  <tr><td>13</td><td><span class="dot dot-need"></span><span class="field">PRODUCT_NAME</span></td><td>품명</td><td></td></tr>
+  <tr><td>14</td><td><span class="dot dot-need"></span><span class="field">COLOR_CODE</span></td><td>색상</td><td>컬러코드</td></tr>
+  <tr><td>15</td><td><span class="dot dot-need"></span><span class="field">SIZE_CODE</span></td><td>사이즈</td><td></td></tr>
+  <tr><td>16</td><td><span class="dot dot-need"></span><span class="field">FIRST_SALE_PRICE</span></td><td>최초판매가</td><td></td></tr>
+  <tr><td>17</td><td><span class="dot dot-need"></span><span class="field">CURRENT_PRICE</span></td><td>현판매가</td><td></td></tr>
+  <tr><td>18</td><td><span class="dot dot-need"></span><span class="field">SALE_QTY</span></td><td>판매수량</td><td></td></tr>
+  <tr><td>19</td><td><span class="dot dot-need"></span><span class="field">ACTUAL_SALE_AMT</span></td><td>실판매금액</td><td>매출대사 핵심</td></tr>
+</table>
 
 <!-- 발주 정보 -->
-<div class="card">
-  <h3>C. 발주 정보 (기간제 테이블) <span class="status status-need">개발 필요</span></h3>
-  <p class="note">출처 : 상품정보등록 + 발주현황 | 기준 키 : STYLE NO + 차수 | 일 1회 전체 수신</p>
-  <div class="field-list">
-    <span>ORDER_ID</span> <span>STYLE_NO</span> <span>ORDER_DATE</span> <span>CONFIRM_DATE</span> <span>DUE_DATE</span> <span>COMPLETE_DATE</span> <span>ORDER_QTY</span> <span>ORDER_STATUS</span> <span>SUPPLIER</span> <span>PURCHASE_TYPE</span> <span>BATCH_NO</span> <span>STOCK_CLOSE_YN</span> <span>SALE_CLOSE_YN</span>
-  </div>
-  <p class="note">ORDER_STATUS : 발주미정 → 발주확정 → 진행중 → 입고완료 → 종료</p>
-</div>
+<h3>C. 발주 정보 (기간제 테이블) <span class="status status-need">개발 필요</span></h3>
+<p class="note">출처 : 상품정보등록 + 발주현황 | 기준 키 : STYLE NO + 차수 | 일 1회 전체 수신</p>
+<table>
+  <tr><th>#</th><th>필드</th><th>한글명</th><th>설명</th></tr>
+  <tr><td>1</td><td><span class="dot dot-check"></span><span class="field">ORDER_ID</span></td><td>발주번호</td><td>현재 미채번. 확인 필요.</td></tr>
+  <tr><td>2</td><td><span class="dot dot-need"></span><span class="field">STYLE_NO</span></td><td>스타일코드</td><td></td></tr>
+  <tr><td>3</td><td><span class="dot dot-need"></span><span class="field">ORDER_DATE</span></td><td>발주일</td><td>발주 생성일</td></tr>
+  <tr><td>4</td><td><span class="dot dot-need"></span><span class="field">CONFIRM_DATE</span></td><td>발주확정일</td><td>내부 컨펌 시점</td></tr>
+  <tr><td>5</td><td><span class="dot dot-need"></span><span class="field">DUE_DATE</span></td><td>납기일</td><td>예상 입고일</td></tr>
+  <tr><td>6</td><td><span class="dot dot-need"></span><span class="field">COMPLETE_DATE</span></td><td>납기완료일</td><td>실제 납품 완료일</td></tr>
+  <tr><td>7</td><td><span class="dot dot-need"></span><span class="field">ORDER_QTY</span></td><td>발주수량</td><td>품목별</td></tr>
+  <tr><td>8</td><td><span class="dot dot-need"></span><span class="field">ORDER_STATUS</span></td><td>발주상태</td><td>발주미정/발주확정/진행중/입고완료/종료</td></tr>
+  <tr><td>9</td><td><span class="dot dot-need"></span><span class="field">SUPPLIER</span></td><td>발주처</td><td>생산처·공급처</td></tr>
+  <tr><td>10</td><td><span class="dot dot-need"></span><span class="field">PURCHASE_TYPE</span></td><td>매입구분</td><td>임가공/완사입</td></tr>
+  <tr><td>11</td><td><span class="dot dot-need"></span><span class="field">BATCH_NO</span></td><td>차수</td><td>리오더 차수</td></tr>
+  <tr><td>12</td><td><span class="dot dot-need"></span><span class="field">STOCK_CLOSE_YN</span></td><td>입고마감</td><td>Y/N</td></tr>
+  <tr><td>13</td><td><span class="dot dot-need"></span><span class="field">SALE_CLOSE_YN</span></td><td>판매마감</td><td>Y/N</td></tr>
+</table>
 
 <!-- 입고현황 -->
-<div class="card">
-  <h3>D. 입고현황 (기간제 테이블) <span class="status status-need">개발 필요</span></h3>
-  <p class="note">출처 : 입고현황 화면 | 기준 키 : 품번+색상+차수 | WMS와 건별 조인 불가 — 금액/원가 분석 독립 활용</p>
-  <div class="field-list">
-    <span>STOCK_IN_DATE</span> <span>STOCK_IN_NO</span> <span>SUPPLIER_NAME</span> <span>WORK_TYPE</span> <span>FIRST_IN_DATE</span> <span>STYLE_NO</span> <span>PRODUCT_NAME</span> <span>BATCH_NO</span> <span>COLOR_CODE</span> <span>PROGRESS_TYPE</span> <span>PURCHASE_TYPE</span> <span>FIRST_SALE_PRICE</span> <span>IN_UNIT_PRICE</span> <span>POINT_AMT</span> <span>PRE_COST</span> <span>PRE_COST_AMT</span> <span>IN_AMT</span> <span>FIRST_SALE_AMT</span> <span>EXPECTED_QTY</span> <span>TOTAL_QTY</span> <span>SIZE_QTY</span>
-  </div>
-  <p class="note">입고현황에 시점별 원가 스냅샷 포함 — 원가 변동 추적 가능.</p>
-</div>
+<h3>D. 입고현황 (기간제 테이블) <span class="status status-need">개발 필요</span></h3>
+<p class="note">출처 : 입고현황 화면 | 기준 키 : 품번+색상+차수 | WMS와 건별 조인 불가 — 금액/원가 분석 독립 활용</p>
+<table>
+  <tr><th>#</th><th>필드</th><th>한글명</th><th>설명</th></tr>
+  <tr><td>1</td><td><span class="dot dot-need"></span><span class="field">STOCK_IN_DATE</span></td><td>입고일자</td><td></td></tr>
+  <tr><td>2</td><td><span class="dot dot-need"></span><span class="field">STOCK_IN_NO</span></td><td>입고번호</td><td>입고 건 고유 키</td></tr>
+  <tr><td>3</td><td><span class="dot dot-need"></span><span class="field">SUPPLIER_NAME</span></td><td>입고처명</td><td>공급처</td></tr>
+  <tr><td>4</td><td><span class="dot dot-need"></span><span class="field">WORK_TYPE</span></td><td>작업구분</td><td>정상/반품/교환</td></tr>
+  <tr><td>5</td><td><span class="dot dot-need"></span><span class="field">FIRST_IN_DATE</span></td><td>최초입고일</td><td>리오더 시 최초</td></tr>
+  <tr><td>6</td><td><span class="dot dot-need"></span><span class="field">STYLE_NO</span></td><td>품번</td><td></td></tr>
+  <tr><td>7</td><td><span class="dot dot-need"></span><span class="field">PRODUCT_NAME</span></td><td>품명</td><td></td></tr>
+  <tr><td>8</td><td><span class="dot dot-need"></span><span class="field">BATCH_NO</span></td><td>차수</td><td></td></tr>
+  <tr><td>9</td><td><span class="dot dot-need"></span><span class="field">COLOR_CODE</span></td><td>색상</td><td></td></tr>
+  <tr><td>10</td><td><span class="dot dot-need"></span><span class="field">PROGRESS_TYPE</span></td><td>진행구분</td><td>예정/진행/완료</td></tr>
+  <tr><td>11</td><td><span class="dot dot-need"></span><span class="field">PURCHASE_TYPE</span></td><td>매입구분명</td><td></td></tr>
+  <tr><td>12</td><td><span class="dot dot-need"></span><span class="field">FIRST_SALE_PRICE</span></td><td>최초판매가</td><td>입고 시점 판매가</td></tr>
+  <tr><td>13</td><td><span class="dot dot-need"></span><span class="field">IN_UNIT_PRICE</span></td><td>입고단가</td><td>실제 입고 원가</td></tr>
+  <tr><td>14</td><td><span class="dot dot-need"></span><span class="field">POINT_AMT</span></td><td>시점금액</td><td>입고 시점 자산가치</td></tr>
+  <tr><td>15</td><td><span class="dot dot-need"></span><span class="field">PRE_COST</span></td><td>사전원가</td><td>원가 스냅샷</td></tr>
+  <tr><td>16</td><td><span class="dot dot-need"></span><span class="field">PRE_COST_AMT</span></td><td>사전원가금액</td><td>사전원가 × 수량</td></tr>
+  <tr><td>17</td><td><span class="dot dot-need"></span><span class="field">IN_AMT</span></td><td>입고금액</td><td>입고단가 × 수량</td></tr>
+  <tr><td>18</td><td><span class="dot dot-need"></span><span class="field">FIRST_SALE_AMT</span></td><td>최초판매금액</td><td>최초판매가 × 수량</td></tr>
+  <tr><td>19</td><td><span class="dot dot-need"></span><span class="field">EXPECTED_QTY</span></td><td>예정수량</td><td>미입고 파악</td></tr>
+  <tr><td>20</td><td><span class="dot dot-need"></span><span class="field">TOTAL_QTY</span></td><td>계</td><td>컬러별 합계</td></tr>
+  <tr><td>21</td><td><span class="dot dot-need"></span><span class="field">SIZE_QTY</span></td><td>사이즈별수량</td><td>각 사이즈별 입고</td></tr>
+</table>
 
-<h2>신규 개발 요청 항목</h2>
-
-<div class="card">
-  <table style="font-size:13px; width:100%; border-collapse:collapse;">
-    <tr style="background:#f8f9fa;"><th style="padding:8px;">#</th><th style="padding:8px;">항목</th><th style="padding:8px;">상태</th></tr>
-    <tr><td style="padding:8px;">1</td><td style="padding:8px;">발주번호 채번 규칙 개발</td><td style="padding:8px;"><span class="status status-need">요청 중</span></td></tr>
-    <tr><td style="padding:8px;">2</td><td style="padding:8px;">판매예정일(발매개시예정일) 필드 추가 + validation</td><td style="padding:8px;"><span class="status status-new">신규</span></td></tr>
-    <tr><td style="padding:8px;">3</td><td style="padding:8px;">품목별주문번호 키 추가 (ERP/WMS)</td><td style="padding:8px;"><span class="status status-new">신규</span></td></tr>
-    <tr><td style="padding:8px;">4</td><td style="padding:8px;">엑셀업로드 양식 수정 (라인시트 활용)</td><td style="padding:8px;"><span class="status status-need">요청 중</span></td></tr>
-  </table>
-</div>
+<h2>신규 개발 요청</h2>
+<table>
+  <tr><th>#</th><th>항목</th><th>상태</th><th>설명</th></tr>
+  <tr><td>1</td><td>발주번호 채번</td><td><span class="status status-need">요청 중</span></td><td>브랜드별 채번 규칙 정의 후 자동 채번</td></tr>
+  <tr><td>2</td><td>판매예정일 필드 추가</td><td><span class="status status-new">신규</span></td><td>발주확정 전환 시 필수 입력 (월 단위 OK) + validation</td></tr>
+  <tr><td>3</td><td>품목별주문번호 키 추가</td><td><span class="status status-new">신규</span></td><td>셀릭 쪽에서 생성 → ERP/WMS 필드 추가</td></tr>
+  <tr><td>4</td><td>엑셀업로드 양식 수정</td><td><span class="status status-need">요청 중</span></td><td>라인시트 활용. 필드 구성대로 수정.</td></tr>
+</table>
 
 </div>
 </body>
