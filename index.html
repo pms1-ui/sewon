@@ -88,85 +88,85 @@
 
 <h3>A. 재고현황 리스트 (getStockTrack) — SKU 단위 수불 요약</h3>
 <table>
-  <tr><th>#</th><th>필드명</th><th>API 필드</th><th>타입</th><th>설명</th></tr>
-  <tr><td>1</td><td><span class="field">BRAND_NAME</span><span class="dot dot-done"></span></td><td>datas[].BRAND_NAME</td><td>string</td><td>브랜드명</td></tr>
-  <tr><td>2</td><td><span class="field">SKU_NAME</span><span class="dot dot-done"></span></td><td>datas[].SKU_NAME</td><td>string</td><td>품목명(상품명)</td></tr>
-  <tr><td>3</td><td><span class="field">SKUCD</span><span class="dot dot-done"></span></td><td>datas[].SKUCD</td><td>string</td><td>스타일코드(품번) — ERP STYLE NO와 매핑</td></tr>
-  <tr><td>4</td><td><span class="field">COLOR_CODE</span><span class="dot dot-done"></span></td><td>datas[].COLOR_CODE</td><td>string</td><td>컬러 코드</td></tr>
-  <tr><td>5</td><td><span class="field">SIZE_CODE</span><span class="dot dot-done"></span></td><td>datas[].SIZE_CODE</td><td>string</td><td>사이즈 코드</td></tr>
-  <tr><td>6</td><td><span class="field">JUNIL_QTY</span><span class="dot dot-done"></span></td><td>datas[].JUNIL_QTY</td><td>number</td><td>전일재고 (시작일 이전 누계)</td></tr>
-  <tr><td>7</td><td><span class="field">IN_QTY</span><span class="dot dot-done"></span></td><td>datas[].IN_QTY</td><td>number</td><td>기간 내 입고수량</td></tr>
-  <tr><td>8</td><td><span class="field">IN_RTN_QTY</span><span class="dot dot-done"></span></td><td>datas[].IN_RTN_QTY</td><td>number</td><td>기간 내 입고반품수량 (업체 반품)</td></tr>
-  <tr><td>9</td><td><span class="field">OUT_QTY</span><span class="dot dot-done"></span></td><td>datas[].OUT_QTY</td><td>number</td><td>기간 내 출고수량</td></tr>
-  <tr><td>10</td><td><span class="field">RTN_QTY</span><span class="dot dot-done"></span></td><td>datas[].RTN_QTY</td><td>number</td><td>기간 내 반품수량 (고객 반품)</td></tr>
-  <tr><td>11</td><td><span class="field">JOJUNG_QTY</span><span class="dot dot-done"></span></td><td>datas[].JOJUNG_QTY</td><td>number</td><td>기간 내 재고조정수량</td></tr>
-  <tr><td>12</td><td><span class="field">NOW_QTY</span><span class="dot dot-done"></span></td><td>datas[].NOW_QTY</td><td>number</td><td>현재고 = 전일+입고-입고반품-출고+반품+조정</td></tr>
-  <tr><td>13</td><td><span class="field">BAR_CODE</span><span class="dot dot-done"></span></td><td>datas[].BAR_CODE</td><td>string</td><td>바코드</td></tr>
-  <tr><td>14</td><td><span class="field">SKU</span><span class="dot dot-done"></span></td><td>datas[].SKU</td><td>string</td><td>SKU (품번+컬러코드+사이즈)</td></tr>
-  <tr><td>15</td><td><span class="field">SKU_COLOR</span><span class="dot dot-done"></span></td><td>datas[].SKU_COLOR</td><td>string</td><td>컬러명 (한글)</td></tr>
-  <tr><td>16</td><td><span class="field">SKU_SIZE</span><span class="dot dot-done"></span></td><td>datas[].SKU_SIZE</td><td>string</td><td>사이즈명</td></tr>
-  <tr><td>17</td><td><span class="field">FIRST_DAN</span><span class="dot dot-done"></span></td><td>datas[].FIRST_DAN</td><td>number</td><td>최초가(정가)</td></tr>
+  <tr><th>#</th><th>필드명</th><th>API 필드</th><th>설명</th></tr>
+  <tr><td>1</td><td><span class="field">BRAND_NAME</span><span class="dot dot-done"></span></td><td>datas[].BRAND_NAME</td><td>브랜드명</td></tr>
+  <tr><td>2</td><td><span class="field">SKU_NAME</span><span class="dot dot-done"></span></td><td>datas[].SKU_NAME</td><td>품목명(상품명)</td></tr>
+  <tr><td>3</td><td><span class="field">SKUCD</span><span class="dot dot-done"></span></td><td>datas[].SKUCD</td><td>스타일코드(품번) — ERP STYLE NO와 매핑</td></tr>
+  <tr><td>4</td><td><span class="field">COLOR_CODE</span><span class="dot dot-done"></span></td><td>datas[].COLOR_CODE</td><td>컬러 코드</td></tr>
+  <tr><td>5</td><td><span class="field">SIZE_CODE</span><span class="dot dot-done"></span></td><td>datas[].SIZE_CODE</td><td>사이즈 코드</td></tr>
+  <tr><td>6</td><td><span class="field">JUNIL_QTY</span><span class="dot dot-done"></span></td><td>datas[].JUNIL_QTY</td><td>전일재고 (시작일 이전 누계)</td></tr>
+  <tr><td>7</td><td><span class="field">IN_QTY</span><span class="dot dot-done"></span></td><td>datas[].IN_QTY</td><td>기간 내 입고수량</td></tr>
+  <tr><td>8</td><td><span class="field">IN_RTN_QTY</span><span class="dot dot-done"></span></td><td>datas[].IN_RTN_QTY</td><td>기간 내 입고반품수량 (업체 반품)</td></tr>
+  <tr><td>9</td><td><span class="field">OUT_QTY</span><span class="dot dot-done"></span></td><td>datas[].OUT_QTY</td><td>기간 내 출고수량</td></tr>
+  <tr><td>10</td><td><span class="field">RTN_QTY</span><span class="dot dot-done"></span></td><td>datas[].RTN_QTY</td><td>기간 내 반품수량 (고객 반품)</td></tr>
+  <tr><td>11</td><td><span class="field">JOJUNG_QTY</span><span class="dot dot-done"></span></td><td>datas[].JOJUNG_QTY</td><td>기간 내 재고조정수량</td></tr>
+  <tr><td>12</td><td><span class="field">NOW_QTY</span><span class="dot dot-done"></span></td><td>datas[].NOW_QTY</td><td>현재고 = 전일+입고-입고반품-출고+반품+조정</td></tr>
+  <tr><td>13</td><td><span class="field">BAR_CODE</span><span class="dot dot-done"></span></td><td>datas[].BAR_CODE</td><td>바코드</td></tr>
+  <tr><td>14</td><td><span class="field">SKU</span><span class="dot dot-done"></span></td><td>datas[].SKU</td><td>SKU (품번+컬러코드+사이즈)</td></tr>
+  <tr><td>15</td><td><span class="field">SKU_COLOR</span><span class="dot dot-done"></span></td><td>datas[].SKU_COLOR</td><td>컬러명 (한글)</td></tr>
+  <tr><td>16</td><td><span class="field">SKU_SIZE</span><span class="dot dot-done"></span></td><td>datas[].SKU_SIZE</td><td>사이즈명</td></tr>
+  <tr><td>17</td><td><span class="field">FIRST_DAN</span><span class="dot dot-done"></span></td><td>datas[].FIRST_DAN</td><td>최초가(정가)</td></tr>
 </table>
 
 <h3>B. 재고현황 상세 (getStockTrackDetail) — SKU별 이력 행</h3>
 <table>
-  <tr><th>#</th><th>필드명</th><th>API 필드</th><th>타입</th><th>설명</th></tr>
-  <tr><td>1</td><td><span class="field">ITAG</span><span class="dot dot-done"></span></td><td>datas[].ITAG</td><td>string</td><td>구분 (초기재고/입고/입고반품/출고/반품/조정)</td></tr>
-  <tr><td>2</td><td><span class="field">CONF_DATE</span><span class="dot dot-done"></span></td><td>datas[].CONF_DATE</td><td>string</td><td>확정일자 (YYYY-MM-DD)</td></tr>
-  <tr><td>3</td><td><span class="field">CARGO_NAME</span><span class="dot dot-done"></span></td><td>datas[].CARGO_NAME</td><td>string</td><td>입고창고명</td></tr>
-  <tr><td>4</td><td><span class="field">COMP_NAME</span><span class="dot dot-done"></span></td><td>datas[].COMP_NAME</td><td>string</td><td>거래처명/매장명</td></tr>
-  <tr><td>5</td><td><span class="field">UNAME</span><span class="dot dot-done"></span></td><td>datas[].UNAME</td><td>string</td><td>확정자</td></tr>
-  <tr><td>6</td><td><span class="field">COMP_BILL_NO</span><span class="dot dot-done"></span></td><td>datas[].COMP_BILL_NO</td><td>string</td><td>전표번호</td></tr>
-  <tr><td>7</td><td><span class="field">SKU</span><span class="dot dot-done"></span></td><td>datas[].SKU</td><td>string</td><td>SKU</td></tr>
-  <tr><td>8</td><td><span class="field">SKU_NAME</span><span class="dot dot-done"></span></td><td>datas[].SKU_NAME</td><td>string</td><td>품목명</td></tr>
-  <tr><td>9</td><td><span class="field">SKUCD</span><span class="dot dot-done"></span></td><td>datas[].SKUCD</td><td>string</td><td>품번</td></tr>
-  <tr><td>10</td><td><span class="field">SKU_SIZE</span><span class="dot dot-done"></span></td><td>datas[].SKU_SIZE</td><td>string</td><td>사이즈</td></tr>
-  <tr><td>11</td><td><span class="field">SKU_COLOR</span><span class="dot dot-done"></span></td><td>datas[].SKU_COLOR</td><td>string</td><td>컬러명</td></tr>
-  <tr><td>12</td><td><span class="field">COLOR_CODE</span><span class="dot dot-done"></span></td><td>datas[].COLOR_CODE</td><td>string</td><td>컬러코드</td></tr>
-  <tr><td>13</td><td><span class="field">SIZE_CODE</span><span class="dot dot-done"></span></td><td>datas[].SIZE_CODE</td><td>string</td><td>사이즈코드</td></tr>
-  <tr><td>14</td><td><span class="field">BAR_CODE</span><span class="dot dot-done"></span></td><td>datas[].BAR_CODE</td><td>string</td><td>바코드</td></tr>
-  <tr><td>15</td><td><span class="field">BRAND_NAME</span><span class="dot dot-done"></span></td><td>datas[].BRAND_NAME</td><td>string</td><td>브랜드명</td></tr>
-  <tr><td>16</td><td><span class="field">FIRST_DAN</span><span class="dot dot-done"></span></td><td>datas[].FIRST_DAN</td><td>number</td><td>최초가</td></tr>
-  <tr><td>17</td><td><span class="field">FIRST_QTY</span><span class="dot dot-done"></span></td><td>datas[].FIRST_QTY</td><td>number</td><td>초기재고수량</td></tr>
-  <tr><td>18</td><td><span class="field">IN_QTY</span><span class="dot dot-done"></span></td><td>datas[].IN_QTY</td><td>number</td><td>입고수량</td></tr>
-  <tr><td>19</td><td><span class="field">IN_RTN_QTY</span><span class="dot dot-done"></span></td><td>datas[].IN_RTN_QTY</td><td>number</td><td>입고반품수량</td></tr>
-  <tr><td>20</td><td><span class="field">OUT_QTY</span><span class="dot dot-done"></span></td><td>datas[].OUT_QTY</td><td>number</td><td>출고수량</td></tr>
-  <tr><td>21</td><td><span class="field">RTN_QTY</span><span class="dot dot-done"></span></td><td>datas[].RTN_QTY</td><td>number</td><td>반품수량</td></tr>
-  <tr><td>22</td><td><span class="field">JO_QTY</span><span class="dot dot-done"></span></td><td>datas[].JO_QTY</td><td>number</td><td>재고조정수량</td></tr>
-  <tr><td>23</td><td><span class="field">BIGO</span><span class="dot dot-done"></span></td><td>datas[].BIGO</td><td>string</td><td>비고</td></tr>
-  <tr><td>24</td><td><span class="field">ACPT_MAN</span><span class="dot dot-done"></span></td><td>datas[].ACPT_MAN</td><td>string</td><td>고객명/수취인 (출고·반품 행)</td></tr>
-  <tr><td>25</td><td><span class="field">ONLINE_ORD_NO</span><span class="dot dot-done"></span></td><td>datas[].ONLINE_ORD_NO</td><td>string</td><td>온라인 주문번호 (출고 행)</td></tr>
-  <tr><td>26</td><td><span class="field">BOX_DELV_NO</span><span class="dot dot-done"></span></td><td>datas[].BOX_DELV_NO</td><td>string</td><td>출고 운송장번호</td></tr>
-  <tr><td>27</td><td><span class="field">CDATE</span><span class="dot dot-done"></span></td><td>datas[].CDATE</td><td>string</td><td>확정시간 (ISO)</td></tr>
+  <tr><th>#</th><th>필드명</th><th>API 필드</th><th>설명</th></tr>
+  <tr><td>1</td><td><span class="field">ITAG</span><span class="dot dot-done"></span></td><td>datas[].ITAG</td><td>구분 (초기재고/입고/입고반품/출고/반품/조정)</td></tr>
+  <tr><td>2</td><td><span class="field">CONF_DATE</span><span class="dot dot-done"></span></td><td>datas[].CONF_DATE</td><td>확정일자 (YYYY-MM-DD)</td></tr>
+  <tr><td>3</td><td><span class="field">CARGO_NAME</span><span class="dot dot-done"></span></td><td>datas[].CARGO_NAME</td><td>입고창고명</td></tr>
+  <tr><td>4</td><td><span class="field">COMP_NAME</span><span class="dot dot-done"></span></td><td>datas[].COMP_NAME</td><td>거래처명/매장명</td></tr>
+  <tr><td>5</td><td><span class="field">UNAME</span><span class="dot dot-done"></span></td><td>datas[].UNAME</td><td>확정자</td></tr>
+  <tr><td>6</td><td><span class="field">COMP_BILL_NO</span><span class="dot dot-done"></span></td><td>datas[].COMP_BILL_NO</td><td>전표번호</td></tr>
+  <tr><td>7</td><td><span class="field">SKU</span><span class="dot dot-done"></span></td><td>datas[].SKU</td><td>SKU</td></tr>
+  <tr><td>8</td><td><span class="field">SKU_NAME</span><span class="dot dot-done"></span></td><td>datas[].SKU_NAME</td><td>품목명</td></tr>
+  <tr><td>9</td><td><span class="field">SKUCD</span><span class="dot dot-done"></span></td><td>datas[].SKUCD</td><td>품번</td></tr>
+  <tr><td>10</td><td><span class="field">SKU_SIZE</span><span class="dot dot-done"></span></td><td>datas[].SKU_SIZE</td><td>사이즈</td></tr>
+  <tr><td>11</td><td><span class="field">SKU_COLOR</span><span class="dot dot-done"></span></td><td>datas[].SKU_COLOR</td><td>컬러명</td></tr>
+  <tr><td>12</td><td><span class="field">COLOR_CODE</span><span class="dot dot-done"></span></td><td>datas[].COLOR_CODE</td><td>컬러코드</td></tr>
+  <tr><td>13</td><td><span class="field">SIZE_CODE</span><span class="dot dot-done"></span></td><td>datas[].SIZE_CODE</td><td>사이즈코드</td></tr>
+  <tr><td>14</td><td><span class="field">BAR_CODE</span><span class="dot dot-done"></span></td><td>datas[].BAR_CODE</td><td>바코드</td></tr>
+  <tr><td>15</td><td><span class="field">BRAND_NAME</span><span class="dot dot-done"></span></td><td>datas[].BRAND_NAME</td><td>브랜드명</td></tr>
+  <tr><td>16</td><td><span class="field">FIRST_DAN</span><span class="dot dot-done"></span></td><td>datas[].FIRST_DAN</td><td>최초가</td></tr>
+  <tr><td>17</td><td><span class="field">FIRST_QTY</span><span class="dot dot-done"></span></td><td>datas[].FIRST_QTY</td><td>초기재고수량</td></tr>
+  <tr><td>18</td><td><span class="field">IN_QTY</span><span class="dot dot-done"></span></td><td>datas[].IN_QTY</td><td>입고수량</td></tr>
+  <tr><td>19</td><td><span class="field">IN_RTN_QTY</span><span class="dot dot-done"></span></td><td>datas[].IN_RTN_QTY</td><td>입고반품수량</td></tr>
+  <tr><td>20</td><td><span class="field">OUT_QTY</span><span class="dot dot-done"></span></td><td>datas[].OUT_QTY</td><td>출고수량</td></tr>
+  <tr><td>21</td><td><span class="field">RTN_QTY</span><span class="dot dot-done"></span></td><td>datas[].RTN_QTY</td><td>반품수량</td></tr>
+  <tr><td>22</td><td><span class="field">JO_QTY</span><span class="dot dot-done"></span></td><td>datas[].JO_QTY</td><td>재고조정수량</td></tr>
+  <tr><td>23</td><td><span class="field">BIGO</span><span class="dot dot-done"></span></td><td>datas[].BIGO</td><td>비고</td></tr>
+  <tr><td>24</td><td><span class="field">ACPT_MAN</span><span class="dot dot-done"></span></td><td>datas[].ACPT_MAN</td><td>고객명/수취인 (출고·반품 행)</td></tr>
+  <tr><td>25</td><td><span class="field">ONLINE_ORD_NO</span><span class="dot dot-done"></span></td><td>datas[].ONLINE_ORD_NO</td><td>온라인 주문번호 (출고 행)</td></tr>
+  <tr><td>26</td><td><span class="field">BOX_DELV_NO</span><span class="dot dot-done"></span></td><td>datas[].BOX_DELV_NO</td><td>출고 운송장번호</td></tr>
+  <tr><td>27</td><td><span class="field">CDATE</span><span class="dot dot-done"></span></td><td>datas[].CDATE</td><td>확정시간 (ISO)</td></tr>
 </table>
 
 <h3>C. 출고 주문 조회 (getOrderInfo) — 출고/반품 건별</h3>
 <table>
-  <tr><th>#</th><th>필드명</th><th>타입</th><th>설명</th></tr>
-  <tr><td>1</td><td><span class="field">BILL_NO</span><span class="dot dot-done"></span></td><td>string</td><td>전표번호</td></tr>
-  <tr><td>2</td><td><span class="field">BILL_DATE</span><span class="dot dot-done"></span></td><td>string</td><td>전표 생성일 (출고일)</td></tr>
-  <tr><td>3</td><td><span class="field">STATUS</span><span class="dot dot-done"></span></td><td>string</td><td>출고 상태 (Y=완료)</td></tr>
-  <tr><td>4</td><td><span class="field">CUSTOMER_NAME</span><span class="dot dot-done"></span></td><td>string</td><td>수령인명</td></tr>
-  <tr><td>5</td><td><span class="field">ORDER_NO</span><span class="dot dot-done"></span></td><td>string</td><td>온라인 주문번호 (매출대사 핵심 키)</td></tr>
-  <tr><td>6</td><td><span class="field">COMP_CODE</span><span class="dot dot-done"></span></td><td>string</td><td>판매처 코드</td></tr>
-  <tr><td>7</td><td><span class="field">COMP_NAME</span><span class="dot dot-done"></span></td><td>string</td><td>판매처명</td></tr>
-  <tr><td>8</td><td><span class="field">SELLIC_ID</span><span class="dot dot-done"></span></td><td>string</td><td>셀릭번호 (품목 고유)</td></tr>
-  <tr><td>9</td><td><span class="field">PRODUCT_NAME</span><span class="dot dot-done"></span></td><td>string</td><td>상품명</td></tr>
-  <tr><td>10</td><td><span class="field">STYLE_CODE</span><span class="dot dot-done"></span></td><td>string</td><td>품번</td></tr>
-  <tr><td>11</td><td><span class="field">SIZE</span><span class="dot dot-done"></span></td><td>string</td><td>사이즈</td></tr>
-  <tr><td>12</td><td><span class="field">COLOR</span><span class="dot dot-done"></span></td><td>string</td><td>색상 코드</td></tr>
-  <tr><td>13</td><td><span class="field">COLOR_NAME</span><span class="dot dot-done"></span></td><td>string</td><td>색상명</td></tr>
-  <tr><td>14</td><td><span class="field">BARCODE</span><span class="dot dot-done"></span></td><td>string</td><td>바코드</td></tr>
-  <tr><td>15</td><td><span class="field">SKU</span><span class="dot dot-done"></span></td><td>string</td><td>SKU</td></tr>
-  <tr><td>16</td><td><span class="field">SHIPPED_QTY</span><span class="dot dot-done"></span></td><td>number</td><td>출고 수량</td></tr>
-  <tr><td>17</td><td><span class="field">UNIT_PRICE</span><span class="dot dot-check"></span></td><td>number</td><td>단가 (대부분 0 → ERP 실판가로 대체)</td></tr>
-  <tr><td>18</td><td><span class="field">TRACKING_NO</span><span class="dot dot-done"></span></td><td>string</td><td>출고 운송장번호</td></tr>
-  <tr><td>19</td><td><span class="field">RETURN_TRACKING_NO</span><span class="dot dot-done"></span></td><td>string</td><td>반품 운송장번호</td></tr>
-  <tr><td>20</td><td><span class="field">RETURN_COLLECTED</span><span class="dot dot-done"></span></td><td>string</td><td>반품 회수 여부 (Y/N)</td></tr>
-  <tr><td>21</td><td><span class="field">ACTION</span><span class="dot dot-done"></span></td><td>string</td><td>반품 접수 구분 (반품/교환)</td></tr>
-  <tr><td>22</td><td><span class="field">SELECTED_OPTION</span><span class="dot dot-done"></span></td><td>string</td><td>선택 옵션</td></tr>
-  <tr><td>23</td><td><span class="field">PHONE_NUMBER</span><span class="dot dot-done"></span></td><td>string</td><td>수령인 전화번호</td></tr>
-  <tr><td>24</td><td><span class="field">DELIVERY_MEMO</span><span class="dot dot-done"></span></td><td>string</td><td>출고 메모</td></tr>
+  <tr><th>#</th><th>필드명</th><th>설명</th></tr>
+  <tr><td>1</td><td><span class="field">BILL_NO</span><span class="dot dot-done"></span></td><td>전표번호</td></tr>
+  <tr><td>2</td><td><span class="field">BILL_DATE</span><span class="dot dot-done"></span></td><td>전표 생성일 (출고일)</td></tr>
+  <tr><td>3</td><td><span class="field">STATUS</span><span class="dot dot-done"></span></td><td>출고 상태 (Y=완료)</td></tr>
+  <tr><td>4</td><td><span class="field">CUSTOMER_NAME</span><span class="dot dot-done"></span></td><td>수령인명</td></tr>
+  <tr><td>5</td><td><span class="field">ORDER_NO</span><span class="dot dot-done"></span></td><td>온라인 주문번호 (매출대사 핵심 키)</td></tr>
+  <tr><td>6</td><td><span class="field">COMP_CODE</span><span class="dot dot-done"></span></td><td>판매처 코드</td></tr>
+  <tr><td>7</td><td><span class="field">COMP_NAME</span><span class="dot dot-done"></span></td><td>판매처명</td></tr>
+  <tr><td>8</td><td><span class="field">SELLIC_ID</span><span class="dot dot-done"></span></td><td>셀릭번호 (품목 고유)</td></tr>
+  <tr><td>9</td><td><span class="field">PRODUCT_NAME</span><span class="dot dot-done"></span></td><td>상품명</td></tr>
+  <tr><td>10</td><td><span class="field">STYLE_CODE</span><span class="dot dot-done"></span></td><td>품번</td></tr>
+  <tr><td>11</td><td><span class="field">SIZE</span><span class="dot dot-done"></span></td><td>사이즈</td></tr>
+  <tr><td>12</td><td><span class="field">COLOR</span><span class="dot dot-done"></span></td><td>색상 코드</td></tr>
+  <tr><td>13</td><td><span class="field">COLOR_NAME</span><span class="dot dot-done"></span></td><td>색상명</td></tr>
+  <tr><td>14</td><td><span class="field">BARCODE</span><span class="dot dot-done"></span></td><td>바코드</td></tr>
+  <tr><td>15</td><td><span class="field">SKU</span><span class="dot dot-done"></span></td><td>SKU</td></tr>
+  <tr><td>16</td><td><span class="field">SHIPPED_QTY</span><span class="dot dot-done"></span></td><td>출고 수량</td></tr>
+  <tr><td>17</td><td><span class="field">UNIT_PRICE</span><span class="dot dot-check"></span></td><td>단가 (대부분 0 → ERP 실판가로 대체)</td></tr>
+  <tr><td>18</td><td><span class="field">TRACKING_NO</span><span class="dot dot-done"></span></td><td>출고 운송장번호</td></tr>
+  <tr><td>19</td><td><span class="field">RETURN_TRACKING_NO</span><span class="dot dot-done"></span></td><td>반품 운송장번호</td></tr>
+  <tr><td>20</td><td><span class="field">RETURN_COLLECTED</span><span class="dot dot-done"></span></td><td>반품 회수 여부 (Y/N)</td></tr>
+  <tr><td>21</td><td><span class="field">ACTION</span><span class="dot dot-done"></span></td><td>반품 접수 구분 (반품/교환)</td></tr>
+  <tr><td>22</td><td><span class="field">SELECTED_OPTION</span><span class="dot dot-done"></span></td><td>선택 옵션</td></tr>
+  <tr><td>23</td><td><span class="field">PHONE_NUMBER</span><span class="dot dot-done"></span></td><td>수령인 전화번호</td></tr>
+  <tr><td>24</td><td><span class="field">DELIVERY_MEMO</span><span class="dot dot-done"></span></td><td>출고 메모</td></tr>
 </table>
 
 <!-- ============================================================ -->
