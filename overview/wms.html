@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMS 한눈에보기 — 차일디</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Pretendard', -apple-system, sans-serif; background: #f5f5f7; color: #1d1d1f; padding: 40px 20px; line-height: 1.6; }
+  .container { max-width: 1000px; margin: 0 auto; }
+  h1 { font-size: 24px; margin-bottom: 4px; }
+  .subtitle { color: #6e6e73; font-size: 13px; margin-bottom: 32px; }
+  h2 { font-size: 17px; margin: 32px 0 10px; color: #1d1d1f; }
+  .card { background: #fff; border-radius: 10px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .card h3 { font-size: 15px; margin-bottom: 10px; color: #0071e3; }
+  .status { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .status-done { background: #d4edda; color: #155724; }
+  .status-progress { background: #fff3cd; color: #856404; }
+  .field-list { font-size: 13px; color: #3d3d3d; margin: 8px 0; line-height: 1.8; }
+  .field-list span { font-family: 'SF Mono', monospace; font-size: 11px; background: #e8f4fd; color: #0071e3; padding: 2px 6px; border-radius: 3px; margin-right: 4px; }
+  .summary-box { background: #f0f7f0; border-radius: 8px; padding: 14px 18px; margin: 20px 0; font-size: 13px; border-left: 4px solid #28a745; }
+  .nav { display: flex; gap: 8px; position: fixed; top: 12px; right: 20px; z-index: 100; }
+  .nav a { display: inline-block; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; color: #1d1d1f; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1); transition: background 0.2s; }
+  .nav a:hover { background: #0071e3; color: #fff; }
+  .nav a.active { background: #28a745; color: #fff; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; }
+  th { background: #f8f9fa; padding: 8px 10px; text-align: left; font-weight: 600; }
+  td { padding: 7px 10px; border-bottom: 1px solid #f1f3f5; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="/">전체 스펙</a>
+  <a href="/overview/wms.html" class="active">WMS 한눈에보기</a>
+  <a href="/overview/erp.html">ERP 한눈에보기</a>
+</div>
+
+<div class="container">
+
+<h1>WMS 한눈에보기</h1>
+<p class="subtitle">세원 WMS API — 개발 현황 요약</p>
+
+<div class="summary-box">
+  <strong>총 4개 API 개발 완료.</strong> 출고 주문 조회 / 반품 신청 / 재고현황 리스트 / 재고현황 상세.<br>
+  수량·물류 흐름 데이터 확보 완료. 금액 데이터는 ERP에서 별도 확보.
+</div>
+
+<!-- API 1 -->
+<div class="card">
+  <h3>1. 출고 주문 조회 (getOrderInfo) <span class="status status-done">개발 완료</span></h3>
+  <p style="font-size:12px; color:#6e6e73;">출고 건 단건/기간 조회. 온/오프라인 구분. 반품 접수 정보 포함.</p>
+  <div class="field-list">
+    <span>BILL_NO</span> <span>BILL_DATE</span> <span>STATUS</span> <span>ORDER_NO</span> <span>COMP_CODE</span> <span>COMP_NAME</span> <span>SELLIC_ID</span> <span>STYLE_CODE</span> <span>SKU</span> <span>COLOR</span> <span>SIZE</span> <span>SHIPPED_QTY</span> <span>TRACKING_NO</span> <span>RETURN_TRACKING_NO</span> <span>RETURN_COLLECTED</span> <span>ACTION</span>
+  </div>
+  <table>
+    <tr><th>조회 방식</th><th>최대 기간</th><th>필터</th></tr>
+    <tr><td>SINGLE (단건) / PERIOD (기간)</td><td>31일</td><td>outType (온라인/오프라인/전체), compcode</td></tr>
+  </table>
+</div>
+
+<!-- API 2 -->
+<div class="card">
+  <h3>2. 반품 신청 (sendOrderRtn) <span class="status status-done">개발 완료</span></h3>
+  <p style="font-size:12px; color:#6e6e73;">우체국 전송 → WMS 반품 데이터 생성 → 차일디 웹훅 전송.</p>
+  <div class="field-list">
+    <span>bill_no</span> <span>type</span> <span>reason_code</span> <span>items[].sellic_id</span> <span>items[].qty</span>
+  </div>
+</div>
+
+<!-- API 3 -->
+<div class="card">
+  <h3>3. 재고현황 리스트 (getStockTrack) <span class="status status-done">개발 완료</span></h3>
+  <p style="font-size:12px; color:#6e6e73;">SKU 단위 수불 요약. 전일재고 + 기간 내 입출고 + 현재고.</p>
+  <div class="field-list">
+    <span>SKU</span> <span>SKUCD</span> <span>BRAND_NAME</span> <span>SKU_NAME</span> <span>COLOR_CODE</span> <span>SIZE_CODE</span> <span>JUNIL_QTY</span> <span>IN_QTY</span> <span>IN_RTN_QTY</span> <span>OUT_QTY</span> <span>RTN_QTY</span> <span>JOJUNG_QTY</span> <span>NOW_QTY</span> <span>FIRST_DAN</span>
+  </div>
+  <table>
+    <tr><th>조회 방식</th><th>최대 기간</th><th>필터</th></tr>
+    <tr><td>기간 조회 (startDate ~ endDate)</td><td>3개월</td><td>keyword (SKU/품번/바코드 부분일치)</td></tr>
+  </table>
+</div>
+
+<!-- API 4 -->
+<div class="card">
+  <h3>4. 재고현황 상세 (getStockTrackDetail) <span class="status status-done">개발 완료</span></h3>
+  <p style="font-size:12px; color:#6e6e73;">한 SKU의 기간 내 재고 이력. 행 단위 (입고/출고/반품/조정 등).</p>
+  <div class="field-list">
+    <span>ITAG</span> <span>CONF_DATE</span> <span>CDATE</span> <span>CARGO_NAME</span> <span>COMP_NAME</span> <span>UNAME</span> <span>COMP_BILL_NO</span> <span>ONLINE_ORD_NO</span> <span>BOX_DELV_NO</span> <span>ACPT_MAN</span> <span>FIRST_QTY</span> <span>IN_QTY</span> <span>OUT_QTY</span> <span>RTN_QTY</span> <span>JO_QTY</span>
+  </div>
+  <table>
+    <tr><th>조회 방식</th><th>최대 기간</th><th>필터</th></tr>
+    <tr><td>기간 + SKU 지정 (정확 일치)</td><td>3개월</td><td>sku (필수)</td></tr>
+  </table>
+</div>
+
+<h2>WMS에서 확보할 수 없는 것</h2>
+<div class="card">
+  <p style="font-size:13px;">아래는 WMS에서 제공하지 않아 ERP에서 별도 확보해야 하는 데이터 :</p>
+  <ul style="font-size:13px; padding-left:18px; margin-top:8px;">
+    <li>금액 계열 — 실판가, 원가 (사전/사후), TAG가, FOB단가</li>
+    <li>발주 정보 — 발주번호, 발주일, 발주확정일, 납기일, 발주 상태</li>
+    <li>상품 속성 — 카테고리, 시즌, 성별, 소재, 썸네일</li>
+    <li>주문 금액 — 실판매금액, 최초판매가, 현판매가</li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

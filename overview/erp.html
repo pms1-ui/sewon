@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERP 한눈에보기 — 차일디</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Pretendard', -apple-system, sans-serif; background: #f5f5f7; color: #1d1d1f; padding: 40px 20px; line-height: 1.6; }
+  .container { max-width: 1000px; margin: 0 auto; }
+  h1 { font-size: 24px; margin-bottom: 4px; }
+  .subtitle { color: #6e6e73; font-size: 13px; margin-bottom: 32px; }
+  h2 { font-size: 17px; margin: 32px 0 10px; color: #1d1d1f; }
+  .card { background: #fff; border-radius: 10px; padding: 20px 24px; margin: 16px 0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .card h3 { font-size: 15px; margin-bottom: 10px; color: #0071e3; }
+  .status { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .status-done { background: #d4edda; color: #155724; }
+  .status-need { background: #fff3cd; color: #856404; }
+  .status-new { background: #ffe0e6; color: #d63384; }
+  .field-list { font-size: 13px; color: #3d3d3d; margin: 8px 0; line-height: 1.8; }
+  .field-list span { font-family: 'SF Mono', monospace; font-size: 11px; background: #fff3e0; color: #e65100; padding: 2px 6px; border-radius: 3px; margin-right: 4px; }
+  .field-list span.new { background: #ffe0e6; color: #d63384; }
+  .summary-box { background: #fff8e1; border-radius: 8px; padding: 14px 18px; margin: 20px 0; font-size: 13px; border-left: 4px solid #fd7e14; }
+  .nav { display: flex; gap: 8px; position: fixed; top: 12px; right: 20px; z-index: 100; }
+  .nav a { display: inline-block; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; color: #1d1d1f; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1); transition: background 0.2s; }
+  .nav a:hover { background: #0071e3; color: #fff; }
+  .nav a.active { background: #fd7e14; color: #fff; }
+  .note { font-size: 12px; color: #6e6e73; margin: 6px 0; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="/">전체 스펙</a>
+  <a href="/overview/wms.html">WMS 한눈에보기</a>
+  <a href="/overview/erp.html" class="active">ERP 한눈에보기</a>
+</div>
+
+<div class="container">
+
+<h1>ERP 한눈에보기</h1>
+<p class="subtitle">세원 ERP — 개발 요청 현황 요약</p>
+
+<div class="summary-box">
+  <strong>4개 테이블 수신 필요.</strong> 상품 마스터 / 판매현황 / 발주 정보 / 입고현황.<br>
+  WMS에서 확보한 수량 데이터에 금액·속성·상태 정보를 결합하기 위함.<br>
+  동기화 방식 : 수정일자 기준 정렬 조회하여 변경분 업데이트.
+</div>
+
+<!-- 상품 마스터 -->
+<div class="card">
+  <h3>A. 상품 마스터 (고정 테이블) <span class="status status-need">개발 필요</span></h3>
+  <p class="note">출처 : 상품정보등록 화면 | 기준 키 : STYLE NO | 일 1회 전체 수신</p>
+  <div class="field-list">
+    <span>STYLE_NO</span> <span>PRODUCT_NAME</span> <span>BRAND_CODE</span> <span>YEAR</span> <span>SEASON</span> <span>CATEGORY_L</span> <span>CATEGORY_S</span> <span>GENDER</span> <span>MATERIAL</span> <span>ORIGIN</span> <span>PLAN_TYPE</span> <span>BATCH_NO</span> <span>COLOR_SIZE_QTY</span> <span>THUMBNAIL</span> <span>TAG_PRICE</span> <span>FIRST_PRICE</span> <span>PRE_COST</span> <span>POST_COST</span> <span>FOB_PRICE</span> <span>EXCHANGE_RATE</span> <span>PRICE_CONFIRM_DATE</span> <span class="new">SALE_START_DATE</span>
+  </div>
+  <p class="note">SALE_START_DATE (판매예정일) = 신규 필드 추가 요청. 발주확정 전환 시 필수 입력.</p>
+</div>
+
+<!-- 판매현황 -->
+<div class="card">
+  <h3>B. 판매현황 (기간제 테이블) <span class="status status-need">개발 필요</span></h3>
+  <p class="note">출처 : 판매현황 화면 | 기준 키 : 온라인주문번호 + 품번+색상+사이즈 | 일 1회 전일 수신</p>
+  <div class="field-list">
+    <span>SALE_DATE</span> <span>SHOP_CODE</span> <span>SHOP_NAME</span> <span>SALE_NO</span> <span>SALE_SEQ</span> <span>WORK_TYPE</span> <span>RETURN_TYPE</span> <span>PURCHASE_TYPE</span> <span>ONLINE_ORDER_NO</span> <span class="new">ITEM_ORDER_NO</span> <span>SELLIC_ID</span> <span>STYLE_NO</span> <span>PRODUCT_NAME</span> <span>COLOR_CODE</span> <span>SIZE_CODE</span> <span>FIRST_SALE_PRICE</span> <span>CURRENT_PRICE</span> <span>SALE_QTY</span> <span>ACTUAL_SALE_AMT</span>
+  </div>
+  <p class="note">ITEM_ORDER_NO (품목별주문번호) = 신규 필드 추가 요청. 셀릭 쪽에서 생성·전달 필요.</p>
+</div>
+
+<!-- 발주 정보 -->
+<div class="card">
+  <h3>C. 발주 정보 (기간제 테이블) <span class="status status-need">개발 필요</span></h3>
+  <p class="note">출처 : 상품정보등록 + 발주현황 | 기준 키 : STYLE NO + 차수 | 일 1회 전체 수신</p>
+  <div class="field-list">
+    <span>ORDER_ID</span> <span>STYLE_NO</span> <span>ORDER_DATE</span> <span>CONFIRM_DATE</span> <span>DUE_DATE</span> <span>COMPLETE_DATE</span> <span>ORDER_QTY</span> <span>ORDER_STATUS</span> <span>SUPPLIER</span> <span>PURCHASE_TYPE</span> <span>BATCH_NO</span> <span>STOCK_CLOSE_YN</span> <span>SALE_CLOSE_YN</span>
+  </div>
+  <p class="note">ORDER_STATUS : 발주미정 → 발주확정 → 진행중 → 입고완료 → 종료</p>
+</div>
+
+<!-- 입고현황 -->
+<div class="card">
+  <h3>D. 입고현황 (기간제 테이블) <span class="status status-need">개발 필요</span></h3>
+  <p class="note">출처 : 입고현황 화면 | 기준 키 : 품번+색상+차수 | WMS와 건별 조인 불가 — 금액/원가 분석 독립 활용</p>
+  <div class="field-list">
+    <span>STOCK_IN_DATE</span> <span>STOCK_IN_NO</span> <span>SUPPLIER_NAME</span> <span>WORK_TYPE</span> <span>FIRST_IN_DATE</span> <span>STYLE_NO</span> <span>PRODUCT_NAME</span> <span>BATCH_NO</span> <span>COLOR_CODE</span> <span>PROGRESS_TYPE</span> <span>PURCHASE_TYPE</span> <span>FIRST_SALE_PRICE</span> <span>IN_UNIT_PRICE</span> <span>POINT_AMT</span> <span>PRE_COST</span> <span>PRE_COST_AMT</span> <span>IN_AMT</span> <span>FIRST_SALE_AMT</span> <span>EXPECTED_QTY</span> <span>TOTAL_QTY</span> <span>SIZE_QTY</span>
+  </div>
+  <p class="note">입고현황에 시점별 원가 스냅샷 포함 — 원가 변동 추적 가능.</p>
+</div>
+
+<h2>신규 개발 요청 항목</h2>
+
+<div class="card">
+  <table style="font-size:13px; width:100%; border-collapse:collapse;">
+    <tr style="background:#f8f9fa;"><th style="padding:8px;">#</th><th style="padding:8px;">항목</th><th style="padding:8px;">상태</th></tr>
+    <tr><td style="padding:8px;">1</td><td style="padding:8px;">발주번호 채번 규칙 개발</td><td style="padding:8px;"><span class="status status-need">요청 중</span></td></tr>
+    <tr><td style="padding:8px;">2</td><td style="padding:8px;">판매예정일(발매개시예정일) 필드 추가 + validation</td><td style="padding:8px;"><span class="status status-new">신규</span></td></tr>
+    <tr><td style="padding:8px;">3</td><td style="padding:8px;">품목별주문번호 키 추가 (ERP/WMS)</td><td style="padding:8px;"><span class="status status-new">신규</span></td></tr>
+    <tr><td style="padding:8px;">4</td><td style="padding:8px;">엑셀업로드 양식 수정 (라인시트 활용)</td><td style="padding:8px;"><span class="status status-need">요청 중</span></td></tr>
+  </table>
+</div>
+
+</div>
+</body>
+</html>
