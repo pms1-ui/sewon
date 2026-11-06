@@ -247,13 +247,26 @@
   <tr><td>5</td><td><span class="field">DUE_DATE</span><span class="dot dot-need"></span></td><td>납기일</td><td>예상 입고일</td></tr>
   <tr><td>6</td><td><span class="field">COMPLETE_DATE</span><span class="dot dot-need"></span></td><td>납기완료일</td><td>실제 납품 완료일</td></tr>
   <tr><td>7</td><td><span class="field">ORDER_QTY</span><span class="dot dot-need"></span></td><td>색상/사이즈별수량</td><td>품목별 발주 수량</td></tr>
-  <tr><td>8</td><td><span class="field">ORDER_STATUS</span><span class="dot dot-need"></span></td><td>하단 라디오버튼</td><td>발주미정/발주확정/진행중/입고완료/종료</td></tr>
+  <tr><td>8</td><td><span class="field">ORDER_STATUS</span><span class="dot dot-need"></span></td><td>하단 라디오버튼</td><td>발주미정/발주확정/진행중/입고완료/종료 <span class="tag tag-important">전환조건 확정</span> — 아래 설명 참조</td></tr>
   <tr><td>9</td><td><span class="field">SUPPLIER</span><span class="dot dot-need"></span></td><td>발주처</td><td>생산처·공급처</td></tr>
   <tr><td>10</td><td><span class="field">PURCHASE_TYPE</span><span class="dot dot-need"></span></td><td>매입구분</td><td>임가공/완사입 등</td></tr>
   <tr><td>11</td><td><span class="field">BATCH_NO</span><span class="dot dot-need"></span></td><td>차수</td><td>리오더 차수</td></tr>
   <tr><td>12</td><td><span class="field">STOCK_CLOSE_YN</span><span class="dot dot-need"></span></td><td>입고마감</td><td>입고마감 (Y/N)</td></tr>
   <tr><td>13</td><td><span class="field">SALE_CLOSE_YN</span><span class="dot dot-need"></span></td><td>판매마감</td><td>판매마감 (Y/N)</td></tr>
 </table>
+
+<div class="highlight">
+  <strong>발주상태(ORDER_STATUS) 전환 조건 — 2026-11 세원 확정</strong>
+  <table style="margin-top:10px">
+    <tr><th>상태</th><th>전환 주체</th><th>전환 조건·시점</th></tr>
+    <tr><td><strong>발주미정</strong></td><td>세원 <strong>수기</strong></td><td>상품정보등록 시 지정(엑셀 진행구분 코드로도 지정 가능)</td></tr>
+    <tr><td><strong>발주확정</strong></td><td>세원 <strong>수기</strong></td><td>상품정보등록(엑셀) 업로드 시 지정(엑셀 진행구분 코드로도 지정 가능)</td></tr>
+    <tr><td><strong>진행중</strong></td><td>ERP <strong>자동</strong></td><td>ERP 입고 등록 후 WMS로 전송 시 자동 전환</td></tr>
+    <tr><td><strong>입고완료</strong></td><td>ERP <strong>자동</strong></td><td>WMS에서 입고 확정 후 ERP로 전송 시 자동 전환</td></tr>
+    <tr><td><strong>종료</strong></td><td>세원 <strong>수기</strong></td><td>품번 종결(상품정보등록 '품번종결')</td></tr>
+  </table>
+  <p style="margin:8px 0 0;font-size:13px">정리: <strong>발주미정·발주확정·종료만 수기</strong>이고, <strong>진행중·입고완료는 입고 흐름(ERP 입고 등록 → WMS → ERP)에 따라 자동 전환</strong>된다. 외부(PLM 등)에서 상태를 지정해 반영할 수 있는 구간은 발주미정·발주확정뿐이며, 진행중·입고완료는 수신 전용이다.</p>
+</div>
 
 <h3>D. 입고현황 (기간제 테이블)</h3>
 <p class="note">출처 : ERP 입고현황 화면 | 성격 : 입고 시 발생 | 기준 키 : 품번 + 색상 + 차수 (SKU 레벨 집계). WMS와 건별 조인 불가 — 독립 테이블로 금액/원가 분석용 활용.</p>
