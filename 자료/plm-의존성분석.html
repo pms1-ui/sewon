@@ -137,7 +137,7 @@
   <p><strong>PLM은 세원 상태를 그대로 받아쓰지 않는다.</strong> 상태 운전대는 PLM이 쥔다:</p>
   <ul>
     <li><strong>생산 중 전환</strong> = 세원 "진행중"과 무관하게, <strong>공장 확약(포털/전자서명/이메일)</strong>이 완료되면 PLM이 자체 전환</li>
-    <li><strong>입고 중·입고 완료 전환</strong> = ERP `ORDER_STATUS` 글자가 아니라 <strong>세원 ERP 입고현황의 실제 입고 수량(차수별)</strong>으로 판정 — 첫 입고=입고 중, 전량 입고=입고 완료(설계 확정, 3번 참조)</li>
+    <li><strong>입고 중·입고 완료 전환</strong> = 세원이 입고 흐름으로 <strong>자동 전환</strong>한다(진행중=ERP 입고 등록→WMS 전송 시, 입고완료=WMS 입고 확정→ERP 전송 시, 세원 확정). <strong>PLM은 세원 ORDER_STATUS를 주기적으로 pull해서 발주 상태를 그 값으로 동기화</strong>한다(세원이 바꾼 상태를 받아 맞춤). 한편 ERP 입고현황의 차수별 입고 수량은 <strong>입고 상태(부분입고) 표시·금액/원가 분석</strong> 용도이며 발주 상태를 결정하지 않는다(3번 참조)</li>
   </ul>
 
   <p style="margin-top:10px;">핵심은 <strong>두 시스템의 단계 구분이 다르다</strong>는 점이다. 세원은 입고 중심(발주확정 → 진행중=입고시작 → 입고완료)이라 <strong>"생산 중" 개념이 없고</strong>, PLM은 생산~판매 중심이라 세원에 없는 <strong>생산 중·발매 완료·종료</strong>가 더 있다. 그래서 세원 상태를 글자 그대로 매핑하면 어긋난다.</p>
@@ -166,11 +166,11 @@
         </tr>
         <tr class="derived">
           <td class="sewon" style="color:#c25e00;">진행중 <span style="font-size:11px;">(수불 발생)</span></td><td class="arrow">→</td><td class="plm" style="color:#0071a0;">입고 중</td>
-          <td class="trig"><span style="color:#c2185b;">세원 "진행중"은 생산이 아니라 <b>입고 시작</b></span>. 첫 입고 발생~전량 전(부분입고). <b>ERP 입고현황</b> 차수별 수량으로 자동 전환</td>
+          <td class="trig"><span style="color:#c2185b;">세원 "진행중"은 생산이 아니라 <b>입고 시작</b></span>. <b>ERP 입고 등록 후 WMS로 전송되는 시점에 세원이 자동 전환</b>(세원 확정). <b>PLM은 세원 ORDER_STATUS를 주기적으로 pull해서 발주 상태를 입고 중으로 동기화</b>한다(입고 수량이 아니라 세원 상태 글자 기준).</td>
         </tr>
         <tr class="derived">
           <td class="sewon" style="color:#c25e00;">입고완료</td><td class="arrow">→</td><td class="plm" style="color:#0071a0;">입고 완료</td>
-          <td class="trig">전량 입고. <b>ERP 입고현황</b> 차수별 수량이 발주량 이상이면 자동 전환</td>
+          <td class="trig"><b>WMS에서 입고 확정 후 ERP로 전송되는 시점에 세원이 자동 전환</b>(세원 확정). <b>PLM은 세원 ORDER_STATUS를 주기적으로 pull해서 발주 상태를 입고 완료로 동기화</b>한다. 입고 수량(차수별)은 입고 상태·실제입고일·금액 분석 용도.</td>
         </tr>
         <tr class="derived">
           <td style="color:#a0a0a5;">— (세원에 없음)</td><td class="arrow">→</td><td class="plm" style="color:#0071a0;">발매 완료</td>
@@ -198,10 +198,10 @@
 </div>
 
 <div class="issue verified">
-  <h4><span class="n">3</span> 발주별 입고완료 판정은 WMS가 아니라 ERP 입고현황으로</h4>
+  <h4><span class="n">3</span> 발주 상태는 세원 ORDER_STATUS pull로 동기화, 차수별 입고 수량·금액 분석은 ERP 입고현황으로</h4>
   <p>PLM은 한 품번에 여러 차수(리오더)의 발주를 관리한다. 그래서 입고가 들어오면 <strong>어느 차수 발주에 몇 개가 들어왔는지</strong>를 알아야 한다. 그런데 <strong>WMS 필드표(27필드)에는 생산 발주번호·리오더 차수가 없다.</strong> 반면 <strong>ERP 입고현황에는 차수(BATCH_NO)와 차수별 입고 수량·입고일자·시점 원가가 들어 있다.</strong></p>
-  <p style="margin-top:8px;">또한 ERP는 입고를 잡는 순간(입고/반품등록) 수량·시점·원가가 ERP에 다 기록된다(ERP 입고완료 상태 글자는 수기로 바꾸지만, PLM은 그 글자가 아니라 실제 입고 수량으로 판정하면 된다). 따라서 <strong>차수별 입고완료 판정은 ERP 입고현황으로 하는 것이 맞다</strong>(WMS는 차수가 없어 발주 연결이 안 됨). WMS는 전사 재고·출고·반품 실물 확인용으로만 병행한다.</p>
-  <p style="margin-top:8px; color:#6e6e73;">→ 설계/코드의 "입고 판정 소스 = WMS"를 <strong>ERP 입고현황(차수 포함)으로 변경</strong> 반영. 남은 확인: ERP 입고현황 VIEW의 차수·입고일자·수량 컬럼 실제 제공 여부(세원 납품 시 검증).</p>
+  <p style="margin-top:8px;">또한 ERP는 입고를 잡는 순간(입고/반품등록) 수량·시점·원가가 ERP에 다 기록된다. <strong>발주/생산 상태(입고 중·입고 완료)는 세원 ORDER_STATUS를 주기적으로 pull해서 동기화</strong>하고, <strong>차수별 입고 수량·금액·원가 분석은 ERP 입고현황</strong>으로 한다(WMS는 차수가 없어 발주 연결이 안 됨). WMS는 전사 재고·출고·반품 실물 확인용으로만 병행한다.</p>
+  <p style="margin-top:8px; color:#6e6e73;">→ 발주 상태는 세원 ORDER_STATUS pull로 동기화, 차수별 입고 수량·금액 분석 소스는 <strong>ERP 입고현황(차수 포함)</strong>으로 확정. 남은 확인: ERP 입고현황 VIEW의 차수·입고일자·수량 컬럼 실제 제공 여부(세원 납품 시 검증).</p>
 </div>
 
 <div class="issue verified">
