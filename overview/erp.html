@@ -15,6 +15,7 @@
   .status { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
   .status-need { background: #fff3cd; color: #856404; }
   .status-new { background: #ffe0e6; color: #d63384; }
+  .status-check { background: #e2e3e5; color: #383d41; }
   .summary-box { background: #fff8e1; border-radius: 8px; padding: 14px 18px; margin: 20px 0; font-size: 13px; border-left: 4px solid #fd7e14; }
   .nav { display: flex; gap: 8px; position: fixed; top: 12px; right: 20px; z-index: 100; }
   .nav a { display: inline-block; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; color: #1d1d1f; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1); transition: background 0.2s; }
@@ -38,15 +39,15 @@
 <body>
 
 <div class="nav">
-  <a href="/">전체 스펙</a>
-  <a href="/overview/wms.html">WMS 한눈에보기</a>
-  <a href="/overview/erp.html" class="active">ERP 한눈에보기</a>
+  <a href="../index.html">전체 스펙</a>
+  <a href="./wms.html">WMS 한눈에보기</a>
+  <a href="./erp.html" class="active">ERP 한눈에보기</a>
 </div>
 
 <div class="container">
 
 <h1>ERP 한눈에보기</h1>
-<p class="subtitle">세원 ERP — 개발 요청 현황 요약</p>
+<p class="subtitle">세원 ERP — 개발 요청 현황 요약 (3차 확정본 기준 · 최종 수정 2026-11-06)</p>
 
 <div class="legend">
   <div class="legend-item"><div class="legend-dot" style="background:#fd7e14"></div> ERP 개발 필요</div>
@@ -55,8 +56,9 @@
 </div>
 
 <div class="summary-box">
-  <strong>4개 테이블 수신 필요.</strong> 상품 마스터 / 판매현황 / 발주 정보 / 입고현황.<br>
-  동기화 방식 : 수정일자 기준 정렬 조회하여 변경분 업데이트.
+  <strong>3차 확정 — 6개 VIEW 수신.</strong> 상품리스트(+상품사진) / 판매현황 / 입고현황 / 창고재고 / 매장재고 / 물류·매장코드.<br>
+  연동 방식 : 기존 ERP 연동과 동일하게 <strong>VIEW TABLE 제공</strong> (DB USER : <span class="field">CHILDY_IF_USER</span>). 사전원가/사후원가는 모두 <strong>VAT- 기준</strong>.<br>
+  견적 확정 : <strong>₩12,100,000</strong> (부가세 포함) / 22 M/D / 납기 개발시작 후 30영업일. 상세는 <a href="../04_ERP_개발요청서_3차확정.md">04_ERP_개발요청서_3차확정.md</a> 및 PDF 2종 참조.
 </div>
 
 <!-- 상품 마스터 -->
@@ -151,25 +153,92 @@
   <tr><td>10</td><td><span class="dot dot-need"></span><span class="field">PROGRESS_TYPE</span></td><td>진행구분</td><td>예정/진행/완료</td></tr>
   <tr><td>11</td><td><span class="dot dot-need"></span><span class="field">PURCHASE_TYPE</span></td><td>매입구분명</td><td></td></tr>
   <tr><td>12</td><td><span class="dot dot-need"></span><span class="field">FIRST_SALE_PRICE</span></td><td>최초판매가</td><td>입고 시점 판매가</td></tr>
-  <tr><td>13</td><td><span class="dot dot-need"></span><span class="field">IN_UNIT_PRICE</span></td><td>입고단가</td><td>실제 입고 원가</td></tr>
-  <tr><td>14</td><td><span class="dot dot-need"></span><span class="field">POINT_AMT</span></td><td>시점금액</td><td>입고 시점 자산가치</td></tr>
-  <tr><td>15</td><td><span class="dot dot-need"></span><span class="field">PRE_COST</span></td><td>사전원가</td><td>원가 스냅샷</td></tr>
-  <tr><td>16</td><td><span class="dot dot-need"></span><span class="field">PRE_COST_AMT</span></td><td>사전원가금액</td><td>사전원가 × 수량</td></tr>
-  <tr><td>17</td><td><span class="dot dot-need"></span><span class="field">IN_AMT</span></td><td>입고금액</td><td>입고단가 × 수량</td></tr>
-  <tr><td>18</td><td><span class="dot dot-need"></span><span class="field">FIRST_SALE_AMT</span></td><td>최초판매금액</td><td>최초판매가 × 수량</td></tr>
-  <tr><td>19</td><td><span class="dot dot-need"></span><span class="field">EXPECTED_QTY</span></td><td>예정수량</td><td>미입고 파악</td></tr>
-  <tr><td>20</td><td><span class="dot dot-need"></span><span class="field">TOTAL_QTY</span></td><td>계</td><td>컬러별 합계</td></tr>
-  <tr><td>21</td><td><span class="dot dot-need"></span><span class="field">SIZE_QTY</span></td><td>사이즈별수량</td><td>각 사이즈별 입고</td></tr>
+  <tr><td>13</td><td><span class="dot dot-need"></span><span class="field">POINT_AMT</span></td><td>시점금액</td><td>입고 시점 자산가치</td></tr>
+  <tr><td>14</td><td><span class="dot dot-need"></span><span class="field">PRE_COST</span></td><td>사전원가</td><td>원가 스냅샷 (VAT-)</td></tr>
+  <tr><td>15</td><td><span class="dot dot-need"></span><span class="field">PRE_COST_AMT</span></td><td>사전원가금액</td><td>사전원가 × 수량</td></tr>
+  <tr><td>16</td><td><span class="dot dot-need"></span><span class="field">FIRST_SALE_AMT</span></td><td>최초판매금액</td><td>최초판매가 × 수량</td></tr>
+  <tr><td>17</td><td><span class="dot dot-need"></span><span class="field">EXPECTED_QTY</span></td><td>예정수량</td><td>미입고 파악</td></tr>
+  <tr><td>18</td><td><span class="dot dot-need"></span><span class="field">TOTAL_QTY</span></td><td>계</td><td>컬러별 합계</td></tr>
+  <tr><td>19</td><td><span class="dot dot-need"></span><span class="field">SIZE_QTY</span></td><td>사이즈별수량</td><td>각 사이즈별 입고</td></tr>
+  <tr><td>20</td><td><span class="dot dot-need"></span><span class="field">POST_COST</span></td><td>사후원가</td><td>확정 원가 (VAT-)</td></tr>
+  <tr><td>21</td><td><span class="dot dot-need"></span><span class="field">POST_COST_AMT</span></td><td>사후원가금액</td><td>사후원가 × 수량</td></tr>
 </table>
 
-<h2>필드 추가 외 핵심 신규 개발 요청</h2>
+<!-- 창고재고현황 -->
+<h3>E. 창고재고현황 (기간제 테이블) <span class="status status-need">개발 필요</span></h3>
+<p class="note">출처 : 창고재고관리 → 창고재고현황 | 물류(창고)별 재고·원가. 물류코드 VIEW 별도 제공.</p>
+<table>
+  <tr><th>#</th><th>필드</th><th>한글명</th><th>설명</th></tr>
+  <tr><td>1</td><td><span class="dot dot-need"></span><span class="field">STYLE_NO</span></td><td>품번</td><td>스타일코드</td></tr>
+  <tr><td>2</td><td><span class="dot dot-need"></span><span class="field">PRODUCT_NAME</span></td><td>품명</td><td></td></tr>
+  <tr><td>3</td><td><span class="dot dot-need"></span><span class="field">COLOR_CODE</span></td><td>색상</td><td>컬러코드</td></tr>
+  <tr><td>4</td><td><span class="dot dot-need"></span><span class="field">SUPPLIER_NAME</span></td><td>생산처명</td><td></td></tr>
+  <tr><td>5</td><td><span class="dot dot-need"></span><span class="field">GENDER</span></td><td>성별구분명</td><td>남/여/공용</td></tr>
+  <tr><td>6</td><td><span class="dot dot-need"></span><span class="field">SALE_TYPE</span></td><td>판매구분명</td><td>정상/할인 등</td></tr>
+  <tr><td>7</td><td><span class="dot dot-need"></span><span class="field">FIRST_SALE_PRICE</span></td><td>최초판매가</td><td></td></tr>
+  <tr><td>8</td><td><span class="dot dot-need"></span><span class="field">CURRENT_PRICE</span></td><td>현판매가</td><td></td></tr>
+  <tr><td>9</td><td><span class="dot dot-need"></span><span class="field">PRE_COST</span></td><td>사전원가</td><td>VAT-</td></tr>
+  <tr><td>10</td><td><span class="dot dot-need"></span><span class="field">POST_COST</span></td><td>사후원가</td><td>VAT-</td></tr>
+  <tr><td>11</td><td><span class="dot dot-need"></span><span class="field">FINAL_COST</span></td><td>최종원가</td><td></td></tr>
+  <tr><td>12</td><td><span class="dot dot-need"></span><span class="field">COLOR_SIZE_QTY</span></td><td>사이즈정보</td><td>각 옵션별 재고수량</td></tr>
+  <tr><td>13</td><td><span class="dot dot-need"></span><span class="field">ACTUAL_STOCK</span></td><td>실재고</td><td>실시간 재고</td></tr>
+  <tr><td>14</td><td><span class="dot dot-need"></span><span class="field">FIRST_SALE_AMT</span></td><td>최초판매금액</td><td></td></tr>
+  <tr><td>15</td><td><span class="dot dot-need"></span><span class="field">CURRENT_SALE_AMT</span></td><td>현판매금액</td><td></td></tr>
+  <tr><td>16</td><td><span class="dot dot-need"></span><span class="field">PRE_COST_AMT</span></td><td>사전원가금액</td><td></td></tr>
+  <tr><td>17</td><td><span class="dot dot-need"></span><span class="field">POST_COST_AMT</span></td><td>사후원가금액</td><td></td></tr>
+  <tr><td>18</td><td><span class="dot dot-need"></span><span class="field">POINT_AMT</span></td><td>시점금액</td><td></td></tr>
+  <tr><td>19</td><td><span class="dot dot-need"></span><span class="field">FINAL_COST_AMT</span></td><td>최종원가금액</td><td></td></tr>
+  <tr><td>20</td><td><span class="dot dot-need"></span><span class="field">LOGIS_NAME</span></td><td>물류명</td><td></td></tr>
+  <tr><td>21</td><td><span class="dot dot-need"></span><span class="field">LOGIS_CODE</span></td><td>물류코드</td><td>물류 VIEW 매핑</td></tr>
+</table>
+
+<!-- 매장재고현황 -->
+<h3>F. 매장재고현황 (기간제 테이블) <span class="status status-new">3차 신규</span></h3>
+<p class="note">출처 : 매장재고관리 → 매장재고현황 | 매장별 재고·원가·미착재고. 매장코드 VIEW 별도 제공.</p>
+<table>
+  <tr><th>#</th><th>필드</th><th>한글명</th><th>설명</th></tr>
+  <tr><td>1</td><td><span class="dot dot-need"></span><span class="field">STYLE_NO</span></td><td>품번</td><td>스타일코드</td></tr>
+  <tr><td>2</td><td><span class="dot dot-need"></span><span class="field">PRODUCT_NAME</span></td><td>품명</td><td></td></tr>
+  <tr><td>3</td><td><span class="dot dot-need"></span><span class="field">COLOR_CODE</span></td><td>색상</td><td>컬러코드</td></tr>
+  <tr><td>4</td><td><span class="dot dot-need"></span><span class="field">GENDER</span></td><td>성별구분명</td><td>남/여/공용</td></tr>
+  <tr><td>5</td><td><span class="dot dot-need"></span><span class="field">FIRST_SALE_PRICE</span></td><td>최초판매가</td><td></td></tr>
+  <tr><td>6</td><td><span class="dot dot-need"></span><span class="field">CURRENT_PRICE</span></td><td>현판매가</td><td></td></tr>
+  <tr><td>7</td><td><span class="dot dot-need"></span><span class="field">PRE_COST</span></td><td>사전원가</td><td>VAT-</td></tr>
+  <tr><td>8</td><td><span class="dot dot-need"></span><span class="field">POST_COST</span></td><td>사후원가</td><td>VAT-</td></tr>
+  <tr><td>9</td><td><span class="dot dot-need"></span><span class="field">FINAL_COST</span></td><td>최종원가</td><td></td></tr>
+  <tr><td>10</td><td><span class="dot dot-need"></span><span class="field">COLOR_SIZE_QTY</span></td><td>사이즈정보</td><td>색상/사이즈별 재고수량</td></tr>
+  <tr><td>11</td><td><span class="dot dot-need"></span><span class="field">SYSTEM_STOCK</span></td><td>전산재고</td><td></td></tr>
+  <tr><td>12</td><td><span class="dot dot-need"></span><span class="field">INTRANSIT_QTY</span></td><td>미착재고-수량</td><td></td></tr>
+  <tr><td>13</td><td><span class="dot dot-need"></span><span class="field">INTRANSIT_OUT</span></td><td>미착재고-출고</td><td></td></tr>
+  <tr><td>14</td><td><span class="dot dot-need"></span><span class="field">INTRANSIT_RTN</span></td><td>미착재고-반품</td><td></td></tr>
+  <tr><td>15</td><td><span class="dot dot-need"></span><span class="field">INTRANSIT_RT</span></td><td>미착재고-RT</td><td></td></tr>
+  <tr><td>16</td><td><span class="dot dot-need"></span><span class="field">ACTUAL_STOCK</span></td><td>실재고</td><td></td></tr>
+  <tr><td>17</td><td><span class="dot dot-need"></span><span class="field">FIRST_SALE_AMT</span></td><td>최초판매금액</td><td></td></tr>
+  <tr><td>18</td><td><span class="dot dot-need"></span><span class="field">CURRENT_SALE_AMT</span></td><td>현판매금액</td><td></td></tr>
+  <tr><td>19</td><td><span class="dot dot-need"></span><span class="field">PRE_COST_AMT</span></td><td>사전원가금액</td><td></td></tr>
+  <tr><td>20</td><td><span class="dot dot-need"></span><span class="field">POST_COST_AMT</span></td><td>사후원가금액</td><td></td></tr>
+  <tr><td>21</td><td><span class="dot dot-need"></span><span class="field">POINT_AMT</span></td><td>시점금액</td><td></td></tr>
+  <tr><td>22</td><td><span class="dot dot-need"></span><span class="field">FINAL_COST_AMT</span></td><td>최종원가금액</td><td></td></tr>
+  <tr><td>23</td><td><span class="dot dot-need"></span><span class="field">SHOP_CODE</span></td><td>매장코드</td><td>매장 VIEW 매핑</td></tr>
+  <tr><td>24</td><td><span class="dot dot-need"></span><span class="field">SHOP_NAME</span></td><td>매장명</td><td></td></tr>
+</table>
+
+<h2>필드 추가 외 핵심 신규 개발 요청 (3차)</h2>
 <table>
   <tr><th>#</th><th>항목</th><th>상태</th><th>설명</th></tr>
-  <tr><td>1</td><td>발주번호 채번</td><td><span class="status status-need">요청 중</span></td><td>브랜드별 채번 규칙 정의 후 자동 채번</td></tr>
-  <tr><td>2</td><td>판매예정일 필드 추가</td><td><span class="status status-new">신규</span></td><td>발주확정 전환 시 필수 입력 (월 단위 OK) + validation</td></tr>
-  <tr><td>3</td><td>품목별주문번호 키 추가</td><td><span class="status status-new">신규</span></td><td>셀릭 쪽에서 생성 → ERP/WMS 필드 추가</td></tr>
-  <tr><td>4</td><td>엑셀업로드 양식 수정</td><td><span class="status status-need">요청 중</span></td><td>라인시트 활용. 필드 구성대로 수정.</td></tr>
+  <tr><td>1</td><td>판매예정일 필드 추가</td><td><span class="status status-new">신규</span></td><td>상품정보등록 화면 (가격확정일 아래). 발주확정 전환 시 필수값, 진행중/입고완료 수정 가능.</td></tr>
+  <tr><td>2</td><td>엑셀 신규 필드 추가/필드명 변경</td><td><span class="status status-new">신규</span></td><td>진행구분·판매예정일·사후원가 산출용 11개. 사전원가 산출용은 '사전-' 접두어.</td></tr>
+  <tr><td>3</td><td>엑셀 데이터 UPDATE</td><td><span class="status status-need">요청 중</span></td><td>품번+차수+색상+사이즈 기준 UPDATE. 수정불가 필드 제외, 바코드구분 0 오류 수정.</td></tr>
+  <tr><td>4</td><td>엑셀 진행구분 상태값 지정</td><td><span class="status status-need">요청 중</span></td><td>발주미정/발주확정 코드 업로드로 상태 등록·변경. 코드값 전달 요청.</td></tr>
+  <tr><td>5</td><td>엑셀 업로드 오류 처리 개선</td><td><span class="status status-need">요청 중</span></td><td>오류 사유 전체 노출(쉼표 구분), 오류 품번 제외 등록 로직 개선.</td></tr>
+  <tr><td>6</td><td>변경 이력/로그 제공</td><td><span class="status status-need">요청 중</span></td><td>등록/엑셀/일괄수정 변경이력 저장 및 VIEW 제공. 최종일시+변경 항목.</td></tr>
+  <tr><td>7</td><td>상품리스트 + 상품사진 VIEW</td><td><span class="status status-need">요청 중</span></td><td>50개 필드(사전/사후원가 상세 포함, VAT-). 이미지 DB BLOB 저장, 리스트와 분리 제공.</td></tr>
+  <tr><td>8</td><td>품목별주문번호 키 추가</td><td><span class="status status-new">신규</span></td><td>셀릭 '4-8 주문확인처리' 값 → ERP/WMS 양쪽 동시 반영.</td></tr>
+  <tr><td>9</td><td>발주번호 채번</td><td><span class="status status-check">확인 중</span></td><td>브랜드별 채번 규칙 정의 후 자동 채번. 불가 시 STYLE NO+차수 대체.</td></tr>
+  <tr><td>10</td><td>엑셀업로드 양식 수정</td><td><span class="status status-need">검토 중</span></td><td>라인시트 활용. 필드 추가·삭제·순서 변경.</td></tr>
 </table>
+
+<p class="note">※ 상태 배지의 '확인 중' 색상은 회색(status-check) 기준입니다. 전체 항목·필드 상세와 견적은 <a href="../04_ERP_개발요청서_3차확정.md">04_ERP_개발요청서_3차확정.md</a>를 참조하세요.</p>
 
 </div>
 </body>

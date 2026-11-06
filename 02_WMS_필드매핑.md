@@ -1,8 +1,8 @@
 # WMS 필드 매핑 결과 — DX팀 필드리스트 vs 연동가이드 대조
 
 > 최종 수정: 2026-08-21  
-> 기준 문서: 차일디 WMS API 연동가이드 20260814_.docx  
-> 이전 문서: [01_integration_status_and_tasks.md](./01_integration_status_and_tasks.md)
+> 기준 문서: 차일디_WMS_API_연동가이드_20260814.docx  
+> 이전 문서: [01_연동현황_및_개발과제.md](./01_연동현황_및_개발과제.md)
 
 ---
 
@@ -97,4 +97,4 @@
 
 ---
 
-> 다음 문서: [03_erp_required_fields.md](./03_erp_required_fields.md)
+> 다음 문서: [03_ERP_필요필드정리.md](./03_ERP_필요필드정리.md)
