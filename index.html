@@ -59,9 +59,9 @@
 
 <div class="highlight">
   <strong>최신 요청서(3차 확정) 안내 :</strong> 세원 전달 최종본은
-  <strong>차일디_ERP_개발요청서_3차수정.pdf</strong> 와 정리 문서
+  <strong>자료/차일디_ERP_개발요청서_3차수정.pdf</strong> 와 정리 문서
   <strong>04_ERP_개발요청서_3차확정.md</strong> 입니다.
-  견적 확정본은 <strong>차일디_ERP연동_추가개발견적_3차.pdf</strong> (₩12,100,000 / 22 M/D).
+  견적 확정본은 <strong>자료/차일디_ERP연동_추가개발견적_3차.pdf</strong> (₩12,100,000 / 22 M/D).
   이 페이지는 전체 배경·WMS 수신현황·데이터 연결구조를 한눈에 보는 포털입니다.
 </div>
 
@@ -206,7 +206,7 @@
   <tr><td>19</td><td><span class="field">FOB_PRICE</span><span class="dot dot-need"></span></td><td>FOB단가</td><td>수입 상품 본선인도 가격</td></tr>
   <tr><td>20</td><td><span class="field">EXCHANGE_RATE</span><span class="dot dot-need"></span></td><td>환율</td><td>FOB → 원화 환산</td></tr>
   <tr><td>21</td><td><span class="field">PRICE_CONFIRM_DATE</span><span class="dot dot-need"></span></td><td>가격확정일</td><td>판매가 최종 확정 시점</td></tr>
-  <tr><td>22</td><td><span class="field">SALE_START_DATE</span><span class="dot dot-need"></span><span class="dot dot-need"></span></td><td>—</td><td>판매예정일(발매개시예정일) — <strong>신규 개발 필요</strong></td></tr>
+  <tr><td>22</td><td><span class="field">SALE_START_DATE</span><span class="dot dot-need"></span></td><td><span class="tag tag-new">NEW</span></td><td>판매예정일(발매개시예정일) — 신규 개발 필요</td></tr>
 </table>
 
 <h3>B. 판매현황 (기간제 테이블)</h3>
@@ -350,14 +350,14 @@
 
 <table>
   <tr><th style="width:30px">#</th><th style="width:150px">항목</th><th style="width:50%">내용</th><th>비고</th></tr>
-  <tr><td>1</td><td><strong>판매예정일 필드 추가</strong> <span class="tag tag-new">신규</span></td><td>상품정보등록 화면에 "판매예정일(발매개시예정일)" 추가. 위치=가격확정일 아래. 발주확정 전환 시 필수값(연월일), 진행중/입고완료 수정 가능.</td><td>validation + 변경 로그</td></tr>
-  <tr><td>2</td><td><strong>엑셀 신규 필드/필드명 변경</strong> <span class="tag tag-new">신규</span></td><td>진행구분·판매예정일·사후원가 산출용 등 11개 추가. 사전원가 산출용은 '사전-' 접두어 표기.</td><td>엑셀 업로드 시 함께 저장</td></tr>
+  <tr><td>1</td><td><strong>판매예정일 필드 추가</strong> <span class="tag tag-new">NEW</span></td><td>상품정보등록 화면에 "판매예정일(발매개시예정일)" 추가. 위치=가격확정일 아래. 발주확정 전환 시 필수값(연월일), 진행중/입고완료 수정 가능.</td><td>validation + 변경 로그</td></tr>
+  <tr><td>2</td><td><strong>엑셀 신규 필드/필드명 변경</strong> <span class="tag tag-new">NEW</span></td><td>진행구분·판매예정일·사후원가 산출용 등 11개 추가. 사전원가 산출용은 '사전-' 접두어 표기.</td><td>엑셀 업로드 시 함께 저장</td></tr>
   <tr><td>3</td><td><strong>엑셀 데이터 UPDATE</strong></td><td>품번+차수+색상+사이즈 기준 upsert. 진행구분별 수정불가 필드 제외, 바코드구분 0 오류 수정.</td><td>수정불가/필수전환 필드 목록 요청</td></tr>
   <tr><td>4</td><td><strong>엑셀 진행구분 상태값 지정</strong></td><td>신규/추가 업로드 시 발주미정/발주확정 코드로 상태 등록·변경.</td><td>진행구분 코드값 전달 요청</td></tr>
   <tr><td>5</td><td><strong>엑셀 업로드 오류 처리 개선</strong></td><td>오류 사유 전체 노출(쉼표 구분) + 오류 품번 제외 후 정상 데이터만 등록.</td><td>컨펌 문구/안내 개선</td></tr>
   <tr><td>6</td><td><strong>변경 이력/로그 제공</strong></td><td>등록/엑셀/일괄수정 변경이력 저장 및 VIEW 제공. 최종일시 + 변경 항목.</td><td></td></tr>
   <tr><td>7</td><td><strong>상품리스트 + 상품사진 VIEW</strong></td><td>50개 필드(사전/사후원가 상세 포함, VAT-). 이미지는 DB BLOB 저장, 리스트와 분리 제공.</td><td></td></tr>
-  <tr><td>8</td><td><strong>품목별주문번호 키 추가</strong> <span class="tag tag-new">신규</span></td><td>셀릭 '4-8 주문확인처리' 값 → ERP/WMS 양쪽 동시 반영. 품목 단위 출고↔주문 매칭.</td><td></td></tr>
+  <tr><td>8</td><td><strong>품목별주문번호 키 추가</strong> <span class="tag tag-new">NEW</span></td><td>셀릭 '4-8 주문확인처리' 값 → ERP/WMS 양쪽 동시 반영. 품목 단위 출고↔주문 매칭.</td><td></td></tr>
   <tr><td>9</td><td><strong>발주번호 채번</strong> <span class="tag tag-check">확인</span></td><td>브랜드별 채번 규칙 정의 후 자동 채번 가능 여부. 불가 시 STYLE NO+차수 대체.</td><td>중복 가능 여부 확인</td></tr>
   <tr><td>10</td><td><strong>엑셀업로드 양식 수정</strong> <span class="tag tag-important">검토</span></td><td>상품 엑셀 양식을 라인시트로 활용. 필드 추가·삭제·순서 변경.</td><td>첨부파일 확인</td></tr>
 </table>
