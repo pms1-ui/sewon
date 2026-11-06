@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>차일디 — 세원 ↔ PLM 의존성 분석</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; background: #f5f5f7; color: #1d1d1f; padding: 72px 20px 40px; line-height: 1.65; word-break: keep-all; }
+  .container { max-width: 1120px; margin: 0 auto; }
+  h1 { font-size: 26px; margin-bottom: 4px; }
+  .subtitle { color: #6e6e73; font-size: 14px; margin-bottom: 28px; }
+  h2 { font-size: 19px; margin: 40px 0 10px; padding: 8px 12px; background: #1d1d1f; color: #fff; border-radius: 6px; }
+  h3 { font-size: 16px; margin: 26px 0 10px; color: #0071e3; }
+  p { font-size: 14px; margin: 6px 0; }
+  ul { padding-left: 20px; font-size: 14px; }
+  li { margin: 5px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 24px; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-size: 13px; }
+  th { background: #f8f9fa; padding: 10px 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #dee2e6; vertical-align: top; }
+  td { padding: 9px 12px; border-bottom: 1px solid #f1f3f5; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbfc; }
+  .nav { display: flex; gap: 8px; position: fixed; top: 12px; right: 20px; z-index: 100; flex-wrap: wrap; }
+  .nav a { display: inline-block; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; color: #1d1d1f; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1); transition: background 0.2s; }
+  .nav a:hover { background: #0071e3; color: #fff; }
+  .nav a.active { background: #1d1d1f; color: #fff; }
+
+  .verdict { background: #fff; border-radius: 10px; padding: 24px 26px; margin: 20px 0 28px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border-left: 5px solid #0071e3; }
+  .verdict .big { font-size: 19px; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.01em; }
+  .verdict p { font-size: 14px; color: #3a3a3c; }
+  .seq { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 14px 0 2px; }
+  .seq .step { background: #f0f4ff; border: 1px solid #d6e2ff; color: #0051c7; font-weight: 600; font-size: 13px; padding: 8px 14px; border-radius: 8px; }
+  .seq .arw { color: #a0a0a5; font-weight: 700; }
+
+  .flow { background: #f8f9fa; border-radius: 8px; padding: 16px 18px; margin: 12px 0; font-size: 13.5px; font-family: 'SF Mono', monospace; color: #1d1d1f; overflow-x: auto; }
+
+  .highlight { background: #fff3cd; padding: 14px 16px; border-radius: 6px; margin: 14px 0; font-size: 13.5px; border-left: 4px solid #fd7e14; }
+  .highlight strong { color: #d63384; }
+
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 4px; font-size: 11px; font-weight: 700; vertical-align: middle; }
+  .b-now { background: #d4edda; color: #155724; }
+  .b-dep { background: #ffe0e6; color: #c2185b; }
+  .b-chk { background: #fff3cd; color: #856404; }
+  .b-ok { background: #d4edda; color: #155724; }
+  .b-wms { background: #d4edda; color: #155724; }
+  .b-erp { background: #ffe8d6; color: #c25e00; }
+
+  .issue { background: #fff; border-radius: 10px; padding: 20px 22px; margin: 14px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border-left: 4px solid #c2185b; }
+  .issue h4 { font-size: 15px; margin-bottom: 8px; display: flex; align-items: baseline; gap: 8px; }
+  .issue h4 .n { background: #c2185b; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+  .issue p { font-size: 13.5px; color: #3a3a3c; }
+  .issue .src { font-size: 11.5px; color: #86868b; font-family: 'SF Mono', monospace; margin-top: 8px; display: block; }
+  .issue.verified { border-left-color: #0071e3; }
+  .issue.verified h4 .n { background: #0071e3; }
+
+  .mini { font-size: 12px; color: #86868b; font-style: italic; margin: 4px 0 14px; padding-left: 12px; border-left: 3px solid #e9ecef; }
+  .tag { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 11px; font-weight: 600; }
+  .tag-v { background: #d4edda; color: #155724; }
+
+  /* 세원 ↔ PLM 상태 매핑 도식 */
+  .mapwrap { margin: 16px 0 6px; overflow-x: auto; }
+  .maptbl { width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; border: 1px solid #e4e4e4; border-radius: 10px; overflow: hidden; font-size: 13px; }
+  .maptbl th { background: #1d1d1f; color: #fff; padding: 10px 12px; font-weight: 600; text-align: left; font-size: 12.5px; }
+  .maptbl td { padding: 11px 12px; border-top: 1px solid #f1f3f5; vertical-align: middle; }
+  .maptbl .sewon { color: #c25e00; font-weight: 600; white-space: nowrap; }
+  .maptbl .arrow { color: #a0a0a5; text-align: center; font-weight: 700; width: 36px; }
+  .maptbl .plm { color: #0051c7; font-weight: 700; white-space: nowrap; }
+  .maptbl .trig { color: #4a4a4a; font-size: 12.5px; }
+  .maptbl .trig b { color: #1d1d1f; }
+  .maptbl tr.derived td { background: #f7f9ff; }
+  .maplegend { font-size: 11.5px; color: #86868b; margin-top: 8px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .chip { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 10px; }
+  .chip-s { background: #ffe8d6; color: #c25e00; }
+  .chip-p { background: #e4ecff; color: #0051c7; }
+  .legend { display: flex; gap: 16px; margin: 16px 0; flex-wrap: wrap; font-size: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+</style>
+</head>
+<body>
+<div class="nav">
+  <a href="../index.html">전체 스펙</a>
+  <a href="../overview/wms.html">WMS 한눈에보기</a>
+  <a href="../overview/erp.html">ERP 한눈에보기</a>
+  <a href="./plm-의존성분석.html" class="active">PLM 의존성 분석</a>
+</div>
+<div class="container">
+
+<h1>세원 ↔ PLM 의존성 분석</h1>
+<p class="subtitle">세원 개발이 PLM의 선행조건인가? · 문서·코드 교차 검증 · 최종 정리 2026-11-06</p>
+
+<!-- ============================================================ -->
+<div class="verdict">
+  <div class="big">결론 — 세원 완료는 PLM "전체"의 선행조건이 아니다 (병행 과제)</div>
+  <p>PLM은 세원 연동을 <strong>포트+어댑터로 추상화하고 mock으로 전부 구현</strong>해, 세원 없이도 백엔드(작업 1~22)·프론트(작업 23) 대부분을 완성했다. 다만 <strong>PLM을 실제 업무에 투입</strong>하려면(상품 등록·수정, 차수별 입고, 원가·판매실적 연결) 세원 개발이 핵심 선행조건이다. 즉 세원은 "개발의 블로커"가 아니라 <strong>"실투입·실데이터 검증의 선행조건"</strong>이다.</p>
+  <div class="seq">
+    <span class="step">① 세원 규격 확정</span><span class="arw">→</span>
+    <span class="step">② PLM 연동부 개발</span><span class="arw">→</span>
+    <span class="step">③ 세원 납품 후 실데이터 검증</span>
+  </div>
+  <p style="margin-top:10px; color:#6e6e73; font-size:13px;">세원 납품 전에도 진행할 작업이 있고, 반대로 세원이 끝나도 자동 해결되지 않는 문제(상태 의미 차이·차수 연결 등)가 별도로 존재한다.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>1. 왜 세원 의존도가 높은가</h2>
+<p>PLM의 <strong>입력과 결과 확인이 모두 세원을 거치기</strong> 때문이다. PLM이 세원에 자동 등록하는 API 방식은 요구사항에서 제외되어 있어, 세원의 엑셀 등록·수정 기능이 제대로 동작해야 PLM에서 작성한 정보가 실제 상품·발주 업무로 연결된다.</p>
+<div class="flow">PLM에서 작성·수정 → 엑셀 내보내기 → 사용자가 세원에 업로드 → 세원 데이터 수신 → PLM에서 반영 결과 확인</div>
+<p class="mini">근거: requirements.md Req29 "Childy_PLM은 세원 업로드용 표준 엑셀을 내보내는 역할을 하며, 세원에 직접 자동 등록(API push)하지 않는다."</p>
+
+<!-- ============================================================ -->
+<h2>2. 지금 진행 가능 vs 세원 의존 (영역별)</h2>
+<div class="legend">
+  <div class="legend-item"><span class="badge b-now">지금 가능</span> 세원 없이 진행</div>
+  <div class="legend-item"><span class="badge b-dep">세원 의존</span> 세원 규격·납품 필요</div>
+</div>
+<table>
+  <tr><th style="width:20%">영역</th><th style="width:40%"><span class="badge b-now">지금 진행 가능</span></th><th style="width:40%"><span class="badge b-dep">세원에 의존</span></th></tr>
+  <tr><td><strong>라인시트·상품 수정</strong></td><td>입력 화면, 코드 검증, 변경 이력</td><td>최종 업로드 양식, 수정 가능 필드, 등록 결과 수신</td></tr>
+  <tr><td><strong>발주·결재·공장 협업</strong></td><td>내부 승인, 공장 확약, 작지·첨부·대화</td><td>ERP 상품·차수와의 연결 및 상태 해석</td></tr>
+  <tr><td><strong>입고·리오더 추적</strong></td><td>기존 WMS 조회 연동</td><td>입고를 특정 발주·차수에 연결하는 기준</td></tr>
+  <tr><td><strong>원가·계획 대비 실적</strong></td><td>계산 로직, 조회 화면</td><td>실제 원가·판매·입고 데이터와 금액 검증</td></tr>
+  <tr><td><strong>현금흐름</strong></td><td>예측 규칙과 화면</td><td>ERP 실적 + 재무 지급·정산 데이터 필요</td></tr>
+  <tr><td><strong>운영 기반</strong></td><td>DB 저장, 서버 연결, 로그인, 파일 저장</td><td style="color:#155724; font-weight:600;">세원 완료를 기다릴 필요 없음</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>3. 문서·코드 대조에서 발견한 핵심 문제</h2>
+
+<div class="issue verified">
+  <h4><span class="n">1</span> 상품 수정 규칙이 아직 PLM 개발 기준으로 쓰기 어렵다</h4>
+  <p>3차 요청서는 재업로드 시 기존 상품 수정을 요구하면서, 동시에 <strong>진행 상태별 수정 불가 필드·수불 발생 이후 제한 필드·필수 전환 필드 목록</strong>을 세원에 요청하고 있다. 이 목록을 받아야 PLM도 수정 버튼·검증 규칙을 정확히 만들 수 있다.</p>
+  <p style="margin-top:8px;">수정 키도 불일치: 요청서는 <strong>품번+차수+색상코드+사이즈구분+사이즈</strong>(5요소)인데 견적/요약은 <strong>품번+차수+색상+사이즈</strong>로 축약돼 있어, 단순 요약인지 실제 처리 기준 차이인지 확인 필요.</p>
+  <p style="margin-top:8px;">현재 PLM 내보내기는 76필드 CSV 기반이며, 최신 요청의 진행구분·사후원가 세부 필드·헤더 변경을 모두 반영한 최종본은 아니다. 최종 양식 확정과 실제 업로드 검증이 남아 있다.</p>
+</div>
+
+<div class="issue verified" style="border-left-color:#0071e3;">
+  <h4><span class="n">2</span> 상태 구조 — PLM이 세원을 "베끼지 않고 자체 운전"하도록 정리됨 <span class="tag tag-v" style="background:#d4edda;color:#155724;">◐ 설계로 해소</span></h4>
+  <p><strong>PLM은 세원 상태를 그대로 받아쓰지 않는다.</strong> 상태 운전대는 PLM이 쥔다:</p>
+  <ul>
+    <li><strong>생산 중 전환</strong> = 세원 "진행중"과 무관하게, <strong>공장 확약(포털/전자서명/이메일)</strong>이 완료되면 PLM이 자체 전환</li>
+    <li><strong>입고 중·입고 완료 전환</strong> = ERP `ORDER_STATUS` 글자가 아니라 <strong>세원 ERP 입고현황의 실제 입고 수량(차수별)</strong>으로 판정 — 첫 입고=입고 중, 전량 입고=입고 완료(설계 확정, 3번 참조)</li>
+  </ul>
+
+  <p style="margin-top:10px;">핵심은 <strong>두 시스템의 단계 구분이 다르다</strong>는 점이다. 세원은 입고 중심(발주확정 → 진행중=입고시작 → 입고완료)이라 <strong>"생산 중" 개념이 없고</strong>, PLM은 생산~판매 중심이라 세원에 없는 <strong>생산 중·발매 완료·종료</strong>가 더 있다. 그래서 세원 상태를 글자 그대로 매핑하면 어긋난다.</p>
+  <div class="mapwrap">
+    <table class="maptbl">
+      <thead>
+        <tr>
+          <th>세원 ERP <span class="chip chip-s">ORDER_STATUS</span></th>
+          <th class="arrow"></th>
+          <th>PLM 상태 <span class="chip chip-p">발주 6단계 + 종료</span></th>
+          <th>설명 / 트리거</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="sewon">발주미정</td><td class="arrow">→</td><td class="plm">발주 미정</td>
+          <td class="trig">발주 여부 자체가 미정 (기본값)</td>
+        </tr>
+        <tr>
+          <td class="sewon" rowspan="2" style="border-bottom:1px solid #f1f3f5;">발주확정<br><span style="font-size:11px; color:#a0a0a5;">(아직 입고 전)</span></td><td class="arrow">→</td><td class="plm">발주 확정</td>
+          <td class="trig"><b>내부 결재 승인</b> + 예상입고일·판매시작일 확정</td>
+        </tr>
+        <tr>
+          <td class="arrow">→</td><td class="plm">생산 중</td>
+          <td class="trig"><b>공장 확약</b>(포털/전자서명/이메일). <span style="color:#c2185b;">세원엔 "생산 중" 단계가 없어 세원 발주확정 구간에 묻힌다</span> — PLM이 공장 확약 이벤트로 자체 관리</td>
+        </tr>
+        <tr class="derived">
+          <td class="sewon" style="color:#c25e00;">진행중 <span style="font-size:11px;">(수불 발생)</span></td><td class="arrow">→</td><td class="plm" style="color:#0071a0;">입고 중</td>
+          <td class="trig"><span style="color:#c2185b;">세원 "진행중"은 생산이 아니라 <b>입고 시작</b></span>. 첫 입고 발생~전량 전(부분입고). <b>ERP 입고현황</b> 차수별 수량으로 자동 전환</td>
+        </tr>
+        <tr class="derived">
+          <td class="sewon" style="color:#c25e00;">입고완료</td><td class="arrow">→</td><td class="plm" style="color:#0071a0;">입고 완료</td>
+          <td class="trig">전량 입고. <b>ERP 입고현황</b> 차수별 수량이 발주량 이상이면 자동 전환</td>
+        </tr>
+        <tr class="derived">
+          <td style="color:#a0a0a5;">— (세원에 없음)</td><td class="arrow">→</td><td class="plm" style="color:#0071a0;">발매 완료</td>
+          <td class="trig">판매 시작. <b>PLM에만 있는 단계</b>(세원은 입고까지만 추적)</td>
+        </tr>
+        <tr class="derived">
+          <td class="sewon" style="color:#c25e00;">종료 <span style="font-size:11px;">(품번종결)</span></td><td class="arrow">→</td><td class="plm" style="color:#0071a0;">종료</td>
+          <td class="trig"><b>사람이 켜는 플래그</b>. 발매 완료 이후 판매 종료·단종</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="maplegend">
+      <span><span class="chip chip-s">세원</span> 세원 ERP 상태값(입고 중심 3단계)</span>
+      <span><span class="chip chip-p">PLM</span> PLM 상태(생산~판매 중심)</span>
+      <span style="color:#0071a0;">파란 음영 = PLM이 세원 상태를 그대로 받지 않고 자체 이벤트(공장 확약·입고 수량·플래그)로 판단하는 구간</span>
+    </div>
+  </div>
+  <p style="margin-top:8px;">나아가 <strong>상태 축을 "차수별 발주/생산 6단계" 중심으로 단일화</strong>했다(입고 중·입고 완료는 입고 수량으로 자동 전환). 품번 1개에 차수(리오더)별 발주가 여러 개 걸리므로:</p>
+  <ul>
+    <li><strong>상품 수명주기</strong>(기획/진행/판매중) = 그 품번의 차수별 발주 상태에서 <strong>파생(계산)</strong>. 사람이 따로 전환하지 않음</li>
+    <li><strong>입고 상태</strong>(미입고/부분입고/입고완료) = 입고 수량에서 <strong>자동 계산</strong>되는 파생값</li>
+    <li><strong>종료</strong>만 사람이 켜는 플래그(세원 "종료=품번종결"과 동형)</li>
+  </ul>
+  <p style="margin-top:8px;">→ 손으로 관리하는 상태를 하나로 줄여, "상품은 판매중인데 발주는 생산중" 같은 모순을 원천 차단.</p>
+</div>
+
+<div class="issue verified">
+  <h4><span class="n">3</span> 발주별 입고완료 판정은 WMS가 아니라 ERP 입고현황으로</h4>
+  <p>PLM은 한 품번에 여러 차수(리오더)의 발주를 관리한다. 그래서 입고가 들어오면 <strong>어느 차수 발주에 몇 개가 들어왔는지</strong>를 알아야 한다. 그런데 <strong>WMS 필드표(27필드)에는 생산 발주번호·리오더 차수가 없다.</strong> 반면 <strong>ERP 입고현황에는 차수(BATCH_NO)와 차수별 입고 수량·입고일자·시점 원가가 들어 있다.</strong></p>
+  <p style="margin-top:8px;">또한 ERP는 입고를 잡는 순간(입고/반품등록) 수량·시점·원가가 ERP에 다 기록된다(ERP 입고완료 상태 글자는 수기로 바꾸지만, PLM은 그 글자가 아니라 실제 입고 수량으로 판정하면 된다). 따라서 <strong>차수별 입고완료 판정은 ERP 입고현황으로 하는 것이 맞다</strong>(WMS는 차수가 없어 발주 연결이 안 됨). WMS는 전사 재고·출고·반품 실물 확인용으로만 병행한다.</p>
+  <p style="margin-top:8px; color:#6e6e73;">→ 설계/코드의 "입고 판정 소스 = WMS"를 <strong>ERP 입고현황(차수 포함)으로 변경</strong> 반영. 남은 확인: ERP 입고현황 VIEW의 차수·입고일자·수량 컬럼 실제 제공 여부(세원 납품 시 검증).</p>
+</div>
+
+<div class="issue verified">
+  <h4><span class="n">4</span> '세원 API만 연결하면 끝'인 상태가 아니다</h4>
+  <p>세원 제공 방식은 DB의 <strong>VIEW TABLE</strong>이다. PLM 쪽에서 이를 조회·적재하고 내부 API로 공급하는 부분이 필요하다. 실제 <strong>VIEW 이름, 컬럼명·자료형, 한 행의 단위, 고유키, 변경·삭제 식별 방식, 샘플 데이터</strong>가 있어야 연결부를 확정할 수 있다.</p>
+  <p style="margin-top:8px;">PLM 작업목록상 <strong>프론트는 아직 브라우저 내 메모리 데이터로 동작</strong>하고 REST 서버 연결은 후속 작업이다. 라인시트·작지·계획 등 일부 서버 경로도 미연결. 또한 동기화 로직에서 <strong>PLM이 수정한 상품명이 세원 예전 상품명으로 덮이는 문제</strong>를 메모리 데이터로 재현했다(설계는 PLM 수정본 보존이 목표). 이 보완은 지금 진행 가능.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2>4. 개발 범위 정정 사항</h2>
+<div class="highlight">
+  <strong>9번(발주번호 채번)·10번(라인시트 양식 변경)</strong>은 정리 문서(04 md)에는 "3차 10개 항목"으로 들어가 있으나, <strong>실제 3차 요청서 PDF는 8-2 매장 조회 목록에서 끝나고, 견적에도 두 작업이 별도 항목으로 명시돼 있지 않다.</strong> 따라서 현재 파일만으로는 두 항목이 최신 전달·합의 범위에 포함됐다고 볼 수 없다. (단, 엑셀 신규 필드 추가·필드명 변경 자체는 견적에 포함.)
+</div>
+<p class="mini">원본 대조: 자료/차일디_ERP_개발요청서_3차수정.pdf · 자료/차일디_ERP연동_추가개발견적_3차.pdf</p>
+<p><strong>현금흐름도 별도 과제.</strong> 현재 화면은 원가×수량을 월별로 나누는 데모이고, 실제 대금 결제일·분할 지급은 세원 요청 범위에서 제외되어 <strong>재무회계팀 별도 앱</strong>으로 관리된다. 세원 완료 후에도 지급·정산 데이터와 예측 규칙을 연결해야 한다.</p>
+<p class="mini">근거: CashflowScreen.tsx (데모) · 01_연동현황_및_개발과제.md §3.1 제외 범위</p>
+
+<!-- ============================================================ -->
+<h2>5. 세원 현재 상태</h2>
+<table>
+  <tr><th style="width:18%">시스템</th><th style="width:22%">상태</th><th>내용</th></tr>
+  <tr><td><strong>세원 WMS</strong></td><td><span class="badge b-wms">✅ 개발 완료</span></td><td>REST API 4종(출고·반품·수불·재고). 입고/재고/출고 축은 실연동 준비 완료.</td></tr>
+  <tr><td><strong>세원 ERP</strong></td><td><span class="badge b-erp">🔄 3차 견적 확정 · 계약/개발 전</span></td><td>VIEW TABLE 방식(DB USER CHILDY_IF_USER), 견적 ₩12,100,000 / 22 M/D. <strong>VIEW 6종은 아직 실제 제공 전.</strong></td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2>6. 다음 순서</h2>
+<table>
+  <tr><th style="width:30%">단계</th><th>할 일</th></tr>
+  <tr><td><strong>① 세원 개발 중 먼저 받을 것</strong><br>(납품일 기다리지 않음)</td><td>최종 VIEW 명세·샘플 · 업로드 양식 · 상태별 수정 제한표 · 발주·차수·입고 연결 기준 — <strong>이 규격부터 확정</strong></td></tr>
+  <tr><td><strong>② 동시에 PLM에서 진행</strong></td><td>실제 DB 저장·서버 연결 · 인증·파일 저장 · 수정본 보존 · 상태 매핑 정리 · 기존 WMS 조회 연동</td></tr>
+  <tr><td><strong>③ 세원 납품 후 통과할 검증</strong></td><td>상품 신규 등록 → 수정 재업로드 → PLM 재수신 → 리오더 → 부분입고·반품까지 실데이터로 이어지는지 확인. 오류 품번 제외 업로드·양쪽 동시 수정 포함.</td></tr>
+</table>
+
+<p class="mini" style="margin-top:24px;">본 분석은 3차 요청서·견적 PDF, ERP 교육 회의록, PLM 요구사항·설계·작업목록, 실제 백엔드/프론트 코드를 바탕으로 정리했다.</p>
+
+</div>
+</body>
+</html>
